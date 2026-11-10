@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sixfold Alliance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#faf7f0;--card:#fff;--tx:#1d2a26;--mu:#64706b;--ac:#0f6b57;--ac2:#c8932b;--bd:#e4ded0;--nav:#0f3d33;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101815;--card:#18231f;--tx:#e8efe9;--mu:#9aa9a2;--ac:#3fc4a0;--ac2:#e0b252;--bd:#2a3a34;--nav:#0a1411}}
+:root[data-theme="dark"]{--bg:#101815;--card:#18231f;--tx:#e8efe9;--mu:#9aa9a2;--ac:#3fc4a0;--ac2:#e0b252;--bd:#2a3a34;--nav:#0a1411}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.65 "Hind Siliguri","Noto Sans Bengali",system-ui,sans-serif}
+header{background:var(--nav);color:#fff;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--nav);z-index:10}
+.bar{max-width:1000px;margin:auto;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{font-weight:800;letter-spacing:.5px;color:#fff;text-decoration:none;font-size:18px}.logo span{color:var(--ac2)}
+nav{display:flex;gap:2px;flex-wrap:wrap;flex:1}nav a{color:#cfe0d9;text-decoration:none;padding:6px 10px;border-radius:8px;font-size:14px}
+nav a.on,nav a:hover{background:rgba(255,255,255,.12);color:#fff}
+.btn{border:0;border-radius:10px;padding:10px 18px;font:inherit;font-weight:600;cursor:pointer;background:var(--ac);color:#fff;text-decoration:none;display:inline-block}
+.btn.o{background:transparent;border:1.5px solid currentColor}.btn.s{padding:5px 12px;font-size:13px}
+.btn.g{background:var(--ac2);color:#241a05}
+main{max-width:1000px;margin:auto;padding:20px 16px 50px}
+.view{display:none}.view.on{display:block}
+.hero{background:linear-gradient(135deg,var(--nav),#17614f);color:#fff;border-radius:18px;padding:48px 22px;text-align:center}
+.hero h1{margin:0;font-size:clamp(30px,7vw,52px);letter-spacing:1px}.hero p{margin:8px 0}.hero .tag{color:var(--ac2);font-size:19px;font-weight:600}
+.hero .acts{margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin:18px 0}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px}
+.stat{text-align:center}.stat b{display:block;font-size:28px;color:var(--ac)}.stat small,.mu{color:var(--mu)}
+h2{margin:26px 0 10px;font-size:24px}h2::after{content:"";display:block;width:44px;height:3px;background:var(--ac2);margin-top:4px;border-radius:2px}
+.av{width:56px;height:56px;border-radius:50%;background:var(--ac);color:#fff;display:grid;place-items:center;font-weight:700;font-size:20px;margin:0 auto 8px}
+.mem{text-align:center}
+.wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:8px 10px;border-bottom:1px solid var(--bd);text-align:left;white-space:nowrap}
+input,textarea,select{width:100%;padding:10px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);font:inherit;margin:4px 0 12px}
+label{font-size:14px;color:var(--mu)}.narrow{max-width:400px;margin:20px auto}
+.note{background:rgba(200,147,43,.15);border-left:4px solid var(--ac2);padding:10px 12px;border-radius:8px;font-size:14px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}.pill{color:var(--ac);font-weight:600}
+@media print{header,.tabs,.btn,footer,select,label{display:none!important}body{background:#fff;color:#000}body::before{display:none}.card{border:0}}
+footer{text-align:center;color:var(--mu);font-size:13px;padding:20px}
+ul.cl li{margin:6px 0}
+</style>
+</head>
+<body>
+<header><div class="bar">
+<a class="logo" href="#home">SIXFOLD <span>ALLIANCE</span></a>
+<nav id="nav">
+<a href="#home" data-i="nHome"></a><a href="#about" data-i="nAbout"></a><a href="#activities" data-i="nAct"></a><a href="#constitution" data-i="nCons"></a><a href="#contact" data-i="nCont"></a>
+</nav>
+<button class="btn o s" id="lang" style="color:#fff">EN</button>
+<a class="btn g s" href="#login" data-i="login"></a>
+</div></header>
+<main>
+
+<section class="view" id="v-home">
+<div class="hero"><h1>SIXFOLD ALLIANCE</h1><p class="tag">Six Friends. One Bond.</p>
+<p data-i="motto"></p>
+<div class="acts"><a class="btn g" href="#about" data-i="explore"></a><a class="btn o" href="#login" style="color:#fff" data-i="mlogin"></a></div></div>
+<h2 data-i="nAbout"></h2><p data-i="aboutS"></p>
+</section>
+
+<section class="view" id="v-about">
+<h2 data-i="nAbout"></h2>
+<div class="card"><h3 data-i="mission"></h3><p data-i="missionT"></p></div><br>
+<div class="card"><h3 data-i="vision"></h3><p data-i="visionT"></p></div><br>
+<div class="card"><h3 data-i="obj"></h3><ul class="cl"><li data-i="o1"></li><li data-i="o2"></li><li data-i="o3"></li></ul></div>
+</section>
+
+
+<section class="view" id="v-activities">
+<h2 data-i="nAct"></h2>
+<div class="grid">
+<div class="card"><h3 data-i="a1"></h3><p class="mu" data-i="a1t"></p></div>
+<div class="card"><h3 data-i="a2"></h3><p class="mu" data-i="a2t"></p></div>
+<div class="card"><h3 data-i="a3"></h3><p class="mu" data-i="a3t"></p></div>
+</div>
+</section>
+
+
+<section class="view" id="v-constitution">
+<h2 data-i="nCons"></h2>
+<div class="card"><h3 data-i="rules"></h3>
+<div class="wrap"><table><tr><th data-i="dec"></th><th data-i="req"></th></tr>
+<tr><td data-i="d1"></td><td>৫ / ৬</td></tr>
+<tr><td data-i="d2"></td><td>৬ / ৬</td></tr>
+<tr><td data-i="d3"></td><td>৬ / ৬</td></tr>
+<tr><td data-i="d4"></td><td>৬ / ৬</td></tr>
+<tr><td data-i="d5"></td><td>৪ / ৫</td></tr></table></div></div>
+</section>
+
+<section class="view" id="v-contact">
+<h2 data-i="nCont"></h2>
+<div class="card narrow" style="margin-top:0">
+<label data-i="name"></label><input id="cn">
+<label>Email</label><input id="ce" type="email">
+<label data-i="msg"></label><textarea id="cm" rows="4"></textarea>
+<button class="btn" id="send" data-i="send"></button>
+<p class="pill" id="sent"></p></div>
+</section>
+
+<section class="view" id="v-login">
+<div class="tabs" style="justify-content:center"><button class="btn s" id="tL" data-i="login"></button><button class="btn o s" id="tA" style="color:var(--ac)" data-i="apply"></button></div>
+<div class="card narrow" id="cLogin"><h2 data-i="login" style="margin-top:0"></h2>
+<label data-i="em"></label><input id="le" type="email" placeholder="member@example.com">
+<label data-i="pass"></label><input id="lp" type="password">
+<button class="btn" id="go" style="width:100%" data-i="login"></button>
+<p class="pill" id="lerr"></p><p><a href="#login" id="fp" data-i="forgot"></a></p>
+<p class="note" data-i="loginN"></p></div>
+<div class="card narrow" id="cApply" style="display:none"><h2 data-i="apply" style="margin-top:0"></h2>
+<label data-i="fn"></label><input id="ap_fn" maxlength="60" autocomplete="given-name">
+<label data-i="ln"></label><input id="ap_ln" maxlength="60" autocomplete="family-name">
+<label data-i="fa"></label><input id="ap_fa" maxlength="60">
+<label data-i="mo"></label><input id="ap_mo" maxlength="60">
+<label data-i="vi"></label><input id="ap_vi" maxlength="80">
+<label data-i="ph"></label><input id="ap_ph" type="tel" maxlength="20" placeholder="01XXXXXXXXX" autocomplete="tel">
+<label data-i="em"></label><input id="ap_em" type="email" maxlength="120" autocomplete="email">
+<label data-i="bk"></label><input id="ap_bk" type="tel" maxlength="20" placeholder="01XXXXXXXXX">
+<div style="position:absolute;left:-9999px" aria-hidden="true"><input id="ap_hp" tabindex="-1" autocomplete="off"></div>
+<button class="btn" id="apgo" style="width:100%" data-i="submitApp"></button>
+<p class="pill" id="apmsg"></p><p class="note" data-i="apNote"></p></div>
+</section>
+
+<section class="view" id="v-portal"></section>
+<section class="view" id="v-admin"></section>
+
+</main>
+<footer>© Sixfold Alliance · Six Friends. One Bond.</footer>
+<script>
+var D={bn:{nHome:"হোম",nAbout:"আমাদের কথা",nMem:"সদস্যবৃন্দ",nAct:"কার্যক্রম",nFin:"আর্থিক স্বচ্ছতা",nCons:"গঠনতন্ত্র",nCont:"যোগাযোগ",login:"লগইন",
+motto:"পারস্পরিক সহযোগিতা • সঞ্চয় • সম্মিলিত উন্নয়ন",explore:"আরও জানুন",mlogin:"সদস্য লগইন",
+sMem:"প্রতিষ্ঠাতা সদস্য",sMon:"মাসিক চাঁদা",sSplit:"ব্যক্তিগত / যৌথ তহবিল",sJoin:"ভর্তি ফি",
+aboutS:"ছয় বন্ধুর একটি সংগঠন, যেখানে আমরা একসাথে সঞ্চয় করি, একে অপরের বিপদে পাশে দাঁড়াই এবং সবাই মিলে এগিয়ে যাই।",
+mission:"আমাদের মিশন",missionT:"নিয়মিত সঞ্চয় ও স্বচ্ছ হিসাবের মাধ্যমে সদস্যদের আর্থিক নিরাপত্তা নিশ্চিত করা।",
+vision:"আমাদের ভিশন",visionT:"একটি বিশ্বস্ত, স্বচ্ছ ও সহযোগিতাপূর্ণ বন্ধুত্বের সংগঠন গড়ে তোলা।",
+obj:"উদ্দেশ্য",o1:"মাসিক সঞ্চয়ের অভ্যাস গড়া",o2:"যৌথ তহবিল দিয়ে জরুরি সহায়তা",o3:"সব সিদ্ধান্তে সদস্যদের অংশগ্রহণ",
+privacy:"ব্যক্তিগত আর্থিক হিসাব ও ফোন নম্বর শুধু লগইন করা সদস্যরা দেখতে পারবেন।",
+a1:"মাসিক সভা",a1t:"প্রতি মাসে হিসাব ও সিদ্ধান্ত নিয়ে আলোচনা।",a2:"সহায়তা কার্যক্রম",a2t:"সদস্যের জরুরি প্রয়োজনে ভোটের ভিত্তিতে সহায়তা।",a3:"সামাজিক উদ্যোগ",a3t:"যৌথ তহবিলের অংশ দিয়ে সমাজের জন্য কাজ।",
+finT:"অনুমোদিত সামগ্রিক আর্থিক চিত্র (ব্যক্তিগত হিসাব নয়)।",fPers:"ব্যক্তিগত হিসাব (সম্মিলিত)",fCom:"যৌথ তহবিল",fTot:"মোট জমা",fExp:"মোট খরচ",fLoan:"বকেয়া ঋণ",
+demo:"এটি উদাহরণমূলক ডেমো তথ্য। আসল ডেটা Firebase যুক্ত হলে আসবে।",
+rules:"সিদ্ধান্তের নিয়ম",dec:"সিদ্ধান্ত",req:"প্রয়োজনীয় সমর্থন",d1:"সাধারণ সিদ্ধান্ত",d2:"গঠনতন্ত্র সংশোধন",d3:"নতুন সদস্য",d4:"সংগঠন বিলুপ্তি",d5:"সদস্যকে সহায়তা (সংশ্লিষ্ট সদস্য বাদে)",
+name:"নাম",msg:"বার্তা",send:"পাঠান",sent:"ধন্যবাদ! (ডেমো: বার্তা সংরক্ষিত হয়নি)",
+pass:"পাসওয়ার্ড",loginN:"ডেমো মোড: যেকোনো ইমেইল ও পাসওয়ার্ড দিলে সদস্য ড্যাশবোর্ড খুলবে। ইমেইলে “admin” লিখলে অ্যাডমিন প্যানেল খুলবে।",
+welcome:"স্বাগতম, হৃদয় দে",logout:"লগআউট",pBal:"ব্যক্তিগত ব্যালেন্স",pPaid:"পরিশোধিত মাস",pPend:"বাকি পেমেন্ট",
+recent:"সাম্প্রতিক লেনদেন",date:"তারিখ",type:"ধরন",amt:"পরিমাণ",st:"অবস্থা",tJoin:"ভর্তি ফি",tMon:"নভেম্বরের চাঁদা",
+m1:"হৃদয় দে",mr:"প্রতিষ্ঠাতা সদস্য",forgot:"পাসওয়ার্ড ভুলে গেছেন?",apply:"সদস্য আবেদন",fn:"প্রথম নাম",ln:"শেষ নাম",fa:"পিতার নাম",mo:"মাতার নাম",vi:"গ্রাম",ph:"ফোন নম্বর",em:"ইমেইল",bk:"বিকাশ নম্বর (ঐচ্ছিক)",submitApp:"আবেদন জমা দিন",apNote:"আবেদন সদস্যদের ভোটে যাবে; নতুন সদস্যের জন্য ৬ জনের সর্বসম্মতি লাগে। অনুমোদন হলে আপনাকে জানানো হবে।",apOk:"আবেদন জমা হয়েছে।",apReq:"ঐচ্ছিক ছাড়া সব ঘর পূরণ করুন।",apPhone:"ফোন নম্বর সঠিক নয় (01XXXXXXXXX)।",apMail:"ইমেইল সঠিক নয়।",apDup:"এই ইমেইল দিয়ে আগেই আবেদন বা অ্যাকাউন্ট আছে।",apErr:"জমা দেওয়া যায়নি, একটু পরে আবার চেষ্টা করুন।",eAuth:"ইমেইল বা পাসওয়ার্ড ভুল।",eInact:"এই অ্যাকাউন্ট সক্রিয় নয়।",eReset:"ইমেইল সঠিক হলে রিসেট লিংক পাঠানো হয়েছে।",eMail:"আগে ইমেইল লিখুন।"},
+en:{nHome:"Home",nAbout:"About",nMem:"Members",nAct:"Activities",nFin:"Transparency",nCons:"Constitution",nCont:"Contact",login:"Login",
+motto:"Mutual support • Savings • Shared growth",explore:"Explore more",mlogin:"Member login",
+sMem:"Founder members",sMon:"Monthly contribution",sSplit:"Personal / common fund",sJoin:"Joining fee",
+aboutS:"An organization of six friends who save together, stand by each other in need, and grow as one.",
+mission:"Our mission",missionT:"To secure members’ financial wellbeing through regular savings and transparent accounts.",
+vision:"Our vision",visionT:"To build a trusted, transparent and cooperative circle of friends.",
+obj:"Objectives",o1:"Build a monthly saving habit",o2:"Emergency support from the common fund",o3:"Every member takes part in decisions",
+privacy:"Personal financial records and phone numbers are visible only to logged-in members.",
+a1:"Monthly meeting",a1t:"Review accounts and decisions every month.",a2:"Member support",a2t:"Help for urgent needs, decided by vote.",a3:"Community work",a3t:"A share of the common fund goes to social causes.",
+finT:"Approved aggregate overview (no personal accounts).",fPers:"Personal accounts (combined)",fCom:"Common fund",fTot:"Total deposited",fExp:"Total expenses",fLoan:"Loans outstanding",
+demo:"This is sample demo data. Real data will appear once Firebase is connected.",
+rules:"Decision rules",dec:"Decision",req:"Required support",d1:"General decision",d2:"Constitution amendment",d3:"New member",d4:"Dissolution",d5:"Member support (excluding the member)",
+name:"Name",msg:"Message",send:"Send",sent:"Thank you! (Demo: message not saved)",
+pass:"Password",loginN:"Demo mode: any email and password opens the member dashboard. Put “admin” in the email to open the admin panel.",
+welcome:"Welcome, Hridoy Dey",logout:"Logout",pBal:"Personal balance",pPaid:"Paid months",pPend:"Pending payments",
+recent:"Recent transactions",date:"Date",type:"Type",amt:"Amount",st:"Status",tJoin:"Joining fee",tMon:"November contribution",
+m1:"Hridoy Dey",mr:"Founder member",forgot:"Forgot password?",apply:"Apply for membership",fn:"First name",ln:"Last name",fa:"Father’s name",mo:"Mother’s name",vi:"Village",ph:"Phone number",em:"Email",bk:"bKash number (optional)",submitApp:"Submit application",apNote:"Applications go to a member vote; new members need all 6 founders to agree. You will be informed of the result.",apOk:"Application submitted.",apReq:"Fill in all fields except the optional one.",apPhone:"Phone number is not valid (01XXXXXXXXX).",apMail:"Email is not valid.",apDup:"An application or account already exists for this email.",apErr:"Could not submit. Please try again shortly.",eAuth:"Wrong email or password.",eInact:"This account is not active.",eReset:"If the email is valid, a reset link has been sent.",eMail:"Enter your email first."}};
+var SA={mode:"demo",ready:true,user:null},L="bn",$=function(s){return document.querySelector(s)};
+function mem(){var h="",i;for(i=1;i<=6;i++){var n=i==1?D[L].m1:(L=="bn"?"সদস্য "+i:"Member "+i);
+h+='<div class="card mem"><div class="av">'+(i==1?"H":i)+'</div><b>'+n+'</b><div class="mu">'+D[L].mr+'</div></div>'}
+["#memHome","#memAll"].forEach(function(q){var e=$(q);if(e)e.innerHTML=h})}
+function tr(){var d=D[L];document.documentElement.lang=L;
+document.querySelectorAll("[data-i]").forEach(function(e){e.textContent=d[e.dataset.i]});
+$("#lang").textContent=L=="bn"?"EN":"বাংলা";$("#sent").textContent="";mem();rv("portal");rv("admin")}
+function route(){var h=(location.hash||"#home").slice(1);if(!$("#v-"+h))h="home";
+if(SA.mode=="firebase"&&(h=="portal"||h=="admin")){if(!SA.ready)return;if(!SA.user)h="login";else if(h=="admin"&&!SA.user.staff)h="portal"}
+document.querySelectorAll(".view").forEach(function(v){v.classList.toggle("on",v.id=="v-"+h)});
+document.querySelectorAll("#nav a").forEach(function(a){a.classList.toggle("on",a.getAttribute("href")=="#"+h)});scrollTo(0,0)}
+
+function esc(x){return String(x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;")}
+function t(p){return p[L=="bn"?0:1]}
+function card(n,l){return '<div class="card stat"><b>'+n+'</b><small>'+t(l)+'</small></div>'}
+function tbl(h,r){return '<div class="card wrap"><table><tr>'+h.map(function(x){return '<th>'+(Array.isArray(x)?t(x):x)+'</th>'}).join('')+'</tr>'+r.map(function(w){return '<tr>'+w.map(function(c){return '<td>'+(Array.isArray(c)?t(c):c)+'</td>'}).join('')+'</tr>'}).join('')+'</table></div>'}
+var vb='<button class="btn s vb">'+'✓</button>';
+var H={date:["তারিখ","Date"],type:["ধরন","Type"],amt:["পরিমাণ","Amount"],st:["অবস্থা","Status"],mon:["মাস","Month"],mem:["সদস্য","Member"],ok:["যাচাইকৃত","Verified"]};
+var JF=["ভর্তি ফি","Joining fee"],MC=["মাসিক চাঁদা","Monthly contribution"];
+var V={portal:{cur:"dash",tabs:[["dash",["ড্যাশবোর্ড","Dashboard"]],["pro",["প্রোফাইল","Profile"]],["con",["চাঁদা","Contributions"]],["tx",["লেনদেন","Transactions"]],["org",["সংগঠন","Organization"]],["rp",["রিপোর্ট","Reports"]],["vote",["ভোট","Votes"]],["loan",["সহায়তা","Support"]],["meet",["সভা","Meetings"]],["nt",["নোটিফিকেশন","Notices"]]]},
+admin:{cur:"ov",tabs:[["ov",["ওভারভিউ","Overview"]],["pay",["পেমেন্ট","Payments"]],["led",["লেজার","Ledger"]],["rp",["রিপোর্ট","Reports"]],["mem",["সদস্য","Members"]],["exp",["খরচ","Expenses"]],["ln",["সহায়তা","Support"]],["mt",["সভা","Meetings"]],["ap",["আবেদন","Applications"]],["au",["অডিট লগ","Audit log"]]]}};
+function nb(n){return String(n).replace(/[0-9]/g,function(d){return "০১২৩৪৫৬৭৮৯"[d]})}
+function tk(n){return (n<0?"-":"")+"৳"+nb(Math.abs(n||0))}
+function dt(x){return x&&x.toDate?x.toDate().toISOString().slice(0,10):"—"}
+function srt(r){return r.sort(function(a,b){return (b.createdAt?b.createdAt.seconds:0)-(a.createdAt?a.createdAt.seconds:0)})}
+function AK(k){return SA.mode=="firebase"&&SA.user&&A[k]}
+function fin(){SA.doc("publicSummary/main").then(function(x){x=x||{};["personalTotal","commonFund","totalDeposited","totalExpense","loansOutstanding"].forEach(function(k,i){$("#fp"+(i+1)).textContent=tk(x[k]||0)})})}
+var ST={pending:["অপেক্ষমাণ","Pending"],verified:["যাচাইকৃত","Verified"],rejected:["বাতিল","Rejected"],reversed:["সংশোধিত","Reversed"]};
+var TL={contribution:["মাসিক চাঁদা","Monthly contribution"],joiningFee:["ভর্তি ফি","Joining fee"],reversal:["সংশোধন (Reversal)","Reversal"]};
+function txT(r){r=srt(r);return tbl([["তারিখ","Date"],["ধরন","Type"],["পরিমাণ","Amount"],["৮০ / ২০","80 / 20"],["অবস্থা","Status"]],r.map(function(x){return [dt(x.createdAt),TL[x.type]||x.type,tk(x.amount),x.personalShare+" / "+x.commonShare,["যাচাইকৃত","Verified"]]}))}
+function btns(ty,id){return '<button class="btn s ver" data-ty="'+ty+'" data-id="'+esc(id)+'">✓</button> <button class="btn o s rej" style="color:var(--ac)" data-ty="'+ty+'" data-id="'+esc(id)+'">✗</button>'}
+function pend(){return Promise.all([SA.rows("contributions",["status","==","pending"]),SA.rows("joiningFees",["status","==","pending"])])}
+var A={
+portaldash:async function(){var m=SA.user.memberId,r=await Promise.all([SA.doc("personalAccounts/"+m),SA.doc("commonFund/main"),SA.rows("contributions",["memberId","==",m]),SA.rows("joiningFees",["memberId","==",m]),SA.rows("transactions",["memberId","==",m])]);
+ var all=r[2].concat(r[3]);
+ return '<h2>'+t(["স্বাগতম, ","Welcome, "])+esc(SA.user.name)+'</h2><div class="grid">'+card(tk((r[0]||{}).currentBalance),["ব্যক্তিগত ব্যালেন্স","Personal balance"])+card(tk((r[1]||{}).currentBalance),["যৌথ তহবিল","Common fund"])+card(nb(r[2].filter(function(x){return x.status=="verified"}).length),["পরিশোধিত মাস","Paid months"])+card(nb(all.filter(function(x){return x.status=="pending"}).length),["অপেক্ষমাণ","Pending"])+'</div><h2>'+t(["সাম্প্রতিক লেনদেন","Recent transactions"])+'</h2>'+txT(r[4].slice(0,5))},
+portalcon:async function(){var m=SA.user.memberId,r=await Promise.all([SA.rows("contributions",["memberId","==",m]),SA.rows("joiningFees",["memberId","==",m])]);
+ var rows=r[0].map(function(x){return [x.month,["মাসিক চাঁদা","Monthly"],tk(x.amount),ST[x.status]||x.status]}).concat(r[1].map(function(x){return ["—",["ভর্তি ফি","Joining fee"],tk(x.amount),ST[x.status]||x.status]}));
+ return '<h2>'+t(["জমা","Payments"])+'</h2>'+tbl([["মাস","Month"],["ধরন","Type"],["পরিমাণ","Amount"],["অবস্থা","Status"]],rows)+'<div class="card narrow" style="margin:14px 0 0"><p class="mu">'+t(["টাকা আগে bKash/নগদ/হাতে দিয়ে তারপর এখানে তথ্য দাও। Admin যাচাই করলে ব্যালেন্সে যোগ হবে।","Pay first (bKash/cash), then submit details. Your balance updates after an admin verifies."])+'</p><label>'+t(["ধরন","Type"])+'</label><select id="pty"><option value="monthly">'+t(["মাসিক চাঁদা ৳১০০","Monthly ৳100"])+'</option><option value="joining">'+t(["ভর্তি ফি ৳৫০০","Joining fee ৳500"])+'</option></select><label>'+t(["মাস","Month"])+'</label><input id="pmo" type="month" value="'+new Date().toISOString().slice(0,7)+'"><label>'+t(["পেমেন্ট রেফারেন্স (TrxID)","Payment reference (TrxID)"])+'</label><input id="prf" maxlength="30"><button class="btn sp">'+t(["জমার তথ্য পাঠান","Submit"])+'</button></div>'},
+portaltx:async function(){return '<h2>'+t(["লেনদেন","Transactions"])+'</h2>'+txT(await SA.rows("transactions",["memberId","==",SA.user.memberId]))},
+adminpay:async function(){var r=await pend();
+ var rows=r[0].map(function(x){return [x.memberId,["মাসিক","Monthly"],x.month,tk(x.amount),esc(x.reference),btns("monthly",x.id)]}).concat(r[1].map(function(x){return [x.memberId,["ভর্তি ফি","Joining"],"—",tk(x.amount),esc(x.reference),btns("joining",x.id)]}));
+ return tbl([["সদস্য","Member"],["ধরন","Type"],["মাস","Month"],["পরিমাণ","Amount"],["রেফারেন্স","Reference"],""],rows)},
+adminov:async function(){var r=await Promise.all([SA.rows("personalAccounts"),SA.doc("commonFund/main"),SA.rows("members"),pend()]);
+ var pers=r[0].reduce(function(a,x){return a+(x.currentBalance||0)},0),com=(r[1]||{}).currentBalance||0;
+ return '<h2>ADMIN PANEL</h2><div class="grid">'+card(nb(r[2].length),["সদস্য","Members"])+card(tk(pers+com),["মোট জমা","Total deposited"])+card(tk(com),["যৌথ তহবিল","Common fund"])+card(nb(r[3][0].length+r[3][1].length),["অপেক্ষমাণ","Pending"])+'</div><h2>'+t(["যাচাইয়ের অপেক্ষায়","Pending verification"])+'</h2>'+await A.adminpay()},
+adminled:async function(){var rows=srt(await SA.rows("transactions")),rev={},ad=SA.user.role=="admin";rows.forEach(function(x){if(x.reverses)rev[x.reverses]=1});
+ return '<h2>'+t(["লেজার","Ledger"])+'</h2>'+tbl([["তারিখ","Date"],["সদস্য","Member"],["ধরন","Type"],["পরিমাণ","Amount"],["৮০ / ২০","80 / 20"],""],rows.map(function(x){return [dt(x.createdAt),x.memberId,TL[x.type]||x.type,tk(x.amount),x.personalShare+" / "+x.commonShare,rev[x.id]?"↩ ✓":(ad&&(x.type=="contribution"||x.type=="joiningFee")?'<button class="btn o s rvs" style="color:var(--ac)" data-id="'+esc(x.id)+'">↩</button>':"")]}))+'<p><button class="btn s rec">'+t(["হিসাব মিলিয়ে দেখুন","Reconcile"])+'</button> <span class="pill" id="rmsg"></span></p>'}
+};
+
+var TX=[["2026-11-01",JF,"৳৫০০","৪০০ / ১০০",H.ok],["2026-11-01",MC,"৳১০০","৮০ / ২০",H.ok]];
+var B={
+portaldash:function(){return '<h2>'+t(["স্বাগতম, ","Welcome, "])+esc((SA.user&&SA.user.name)||t(["হৃদয় দে","Hridoy Dey"]))+'</h2><div class="grid">'+card("৳৪০০",["ব্যক্তিগত ব্যালেন্স","Personal balance"])+card("৳৭২০",["যৌথ তহবিল","Common fund"])+card("১",["পরিশোধিত মাস","Paid months"])+card("০",["বাকি পেমেন্ট","Pending"])+'</div>'+tbl([H.date,H.type,H.amt,["৮০ / ২০","80 / 20"],H.st],TX)},
+portalpro:function(){var u=SA.user||{},f=SA.mode=="firebase"?"":" disabled";return '<h2>'+t(["আমার প্রোফাইল","My profile"])+'</h2><div class="card narrow" style="margin:0"><label>'+t(["নাম","Name"])+'</label><input disabled value="'+esc(u.name||"Hridoy Dey")+'"><label>ID</label><input disabled value="'+esc(u.memberId||"SA-003")+'"><label>'+t(["ফোন","Phone"])+'</label><input id="pph" maxlength="20"'+f+'><button class="btn sv"'+f+'>'+t(["সংরক্ষণ","Save"])+'</button> <span class="pill" id="pmsg"></span></div>'},
+portalcon:function(){return '<h2>'+t(MC)+'</h2>'+tbl([H.mon,H.amt,["ব্যক্তিগত","Personal"],["যৌথ","Common"],H.st],[["2026-11","৳১০০","৳৮০","৳২০",H.ok],["2026-12","৳১০০","৳৮০","৳২০",["বাকি","Due"]]])},
+portaltx:function(){return '<h2>'+t(["লেনদেন","Transactions"])+'</h2>'+tbl([H.date,H.type,H.amt,["৮০ / ২০","80 / 20"],H.st],TX)},
+portalloan:function(){return '<h2>'+t(["সহায়তা অনুরোধ","Support requests"])+'</h2>'+tbl([H.date,H.type,H.amt,H.st],[["—","—","—",["কোনো অনুরোধ নেই","No requests"]]])+'<p><button class="btn s">'+t(["নতুন অনুরোধ","New request"])+'</button></p>'},
+portalmeet:function(){return '<h2>'+t(["সভা ও সিদ্ধান্ত","Meetings & decisions"])+'</h2>'+tbl([H.date,["বিষয়","Topic"],H.st],[["2026-11-15",["মাসিক সভা","Monthly meeting"],["আসন্ন","Upcoming"]]])},
+portalnt:function(){return '<h2>'+t(["নোটিফিকেশন","Notifications"])+'</h2><div class="card">🔔 '+t(["ডিসেম্বরের চাঁদা জমা দেওয়ার সময় হয়েছে।","December contribution is due."])+'</div>'},
+adminov:function(){return '<h2>ADMIN PANEL</h2><div class="grid">'+card("০৬",["সদস্য","Members"])+card("৳৩,৬০০",["মোট জমা","Total deposited"])+card("৳৭২০",["যৌথ তহবিল","Common fund"])+card("৳০",["খরচ","Expenses"])+'</div><h2>'+t(["যাচাইয়ের অপেক্ষায়","Pending verification"])+'</h2>'+B.adminpay()},
+adminpay:function(){return tbl([H.mem,H.type,H.amt,""],[["Hridoy Dey",MC,"৳১০০",vb],["সদস্য ২",MC,"৳১০০",vb]])},
+adminmem:function(){var r=[],i;for(i=1;i<=6;i++)r.push(["SA-00"+i,i==1?"Hridoy Dey":(L=="bn"?"সদস্য ":"Member ")+i,["সক্রিয়","Active"]]);return '<h2>'+t(["সদস্য","Members"])+'</h2>'+tbl(["ID",H.mem,H.st],r)},
+adminexp:function(){return '<h2>'+t(["খরচ","Expenses"])+'</h2>'+tbl([H.date,["বিভাগ","Category"],H.amt,["কারণ","Reason"]],[["—","—","৳০","—"]])+'<p><button class="btn s">'+t(["খরচ যোগ","Add expense"])+'</button></p>'},
+adminln:function(){return '<h2>'+t(["সহায়তা অনুরোধ","Support requests"])+'</h2>'+tbl([H.mem,H.amt,["ভোট","Votes"],H.st],[["সদস্য ৩","৳১০০০","৪ / ৫",["ভোট চলছে","Voting"]]])},
+adminled:function(){return tbl([["তারিখ","Date"],["সদস্য","Member"],["ধরন","Type"],["পরিমাণ","Amount"]],[["2026-11-01","SA-003",["মাসিক চাঁদা","Monthly"],"৳১০০"]])},
+adminau:function(){return '<h2>'+t(["অডিট লগ","Audit log"])+'</h2>'+tbl([H.date,["কাজ","Action"],["কে","By"]],[["2026-11-01 10:02","TRANSACTION_VERIFIED","admin"],["2026-11-01 10:00","MEMBER_CREATED","admin"]])}};
+var TL2={expense:["খরচ","Expense"],loanDisbursement:["ঋণ বিতরণ","Loan disbursed"],donation:["অনুদান","Donation"],loanRepayment:["ঋণ ফেরত","Loan repayment"]};
+for(var k2 in TL2)TL[k2]=TL2[k2];
+var PS={open:["ভোট চলছে","Voting"],approved:["অনুমোদিত","Approved"],rejected:["বাতিল","Rejected"],disbursed:["বিতরণ হয়েছে","Disbursed"],repaid:["পরিশোধিত","Repaid"]};
+var KD={general:["সাধারণ","General"],support:["সহায়তা","Support"],member:["নতুন সদস্য","New member"],amendment:["গঠনতন্ত্র সংশোধন","Amendment"],dissolution:["বিলুপ্তি","Dissolution"]};
+function inp(l,h){return '<label>'+t(l)+'</label>'+h}
+function frm(h){return '<div class="card narrow" style="margin:14px 0 0">'+h+'</div>'}
+function sup(r){return r.sort(function(a,b){return (b.createdAt?b.createdAt.seconds:0)-(a.createdAt?a.createdAt.seconds:0)})}
+Object.assign(A,{
+portalvote:async function(){var m=SA.user.memberId,r=sup(await SA.rows("proposals"));
+ var h=r.map(function(p){var mine=p.votes&&p.votes[m],blocked=p.kind=="support"&&p.subjectMemberId==m,can=p.status=="open"&&!mine&&!blocked;
+ return '<div class="card" style="margin-bottom:10px"><b>'+esc(p.title)+'</b> <span class="mu">· '+t(KD[p.kind])+'</span>'+(p.purpose?'<div class="mu">৳'+nb(p.amount)+' — '+esc(p.purpose)+'</div>':'')+'<div class="pill">'+t(PS[p.status])+' · ✓ '+nb(p.yesCount||0)+' / ✗ '+nb(p.noCount||0)+'</div>'+(can?'<button class="btn s cv" data-id="'+esc(p.id)+'" data-v="yes">✓ '+t(["হ্যাঁ","Yes"])+'</button> <button class="btn o s cv" style="color:var(--ac)" data-id="'+esc(p.id)+'" data-v="no">✗ '+t(["না","No"])+'</button>':(mine?'<span class="mu">'+t(["আপনি ভোট দিয়েছেন","You voted"])+': '+mine+'</span>':(blocked&&p.status=="open"?'<span class="mu">'+t(["নিজের প্রস্তাবে ভোট নয়","Cannot vote on your own request"])+'</span>':'')))+'</div>'}).join('');
+ return '<h2>'+t(["ভোট ও প্রস্তাব","Votes & proposals"])+'</h2>'+(h||'<p class="mu">—</p>')+frm('<b>'+t(["নতুন প্রস্তাব","New proposal"])+'</b>'+inp(["ধরন","Type"],'<select id="ppk"><option value="general">'+t(KD.general)+'</option><option value="member">'+t(KD.member)+'</option><option value="amendment">'+t(KD.amendment)+'</option><option value="dissolution">'+t(KD.dissolution)+'</option></select>')+inp(["বিষয়","Title"],'<input id="ppt" maxlength="200">')+'<button class="btn cp">'+t(["পাঠান","Submit"])+'</button>')},
+portalloan:async function(){var m=SA.user.memberId,r=await Promise.all([SA.rows("loans",["memberId","==",m]),SA.rows("donations",["memberId","==",m])]);
+ var rows=r[0].concat(r[1]).map(function(x){return [x.type=="loan"?["ঋণ","Loan"]:["অনুদান","Donation"],tk(x.amount),PS[x.status]||x.status,x.type=="loan"?tk(x.outstanding):"—"]});
+ return '<h2>'+t(["সহায়তা","Support"])+'</h2>'+tbl([["ধরন","Type"],["পরিমাণ","Amount"],["অবস্থা","Status"],["বাকি","Outstanding"]],rows)+frm('<b>'+t(["সহায়তার অনুরোধ","Request support"])+'</b><p class="mu">'+t(["অনুরোধ ভোটে যাবে; আপনি নিজে ভোট দিতে পারবেন না।","Goes to a vote; you cannot vote on it."])+'</p>'+inp(["ধরন","Type"],'<select id="spt"><option value="loan">'+t(["ঋণ","Loan"])+'</option><option value="donation">'+t(["অনুদান","Donation"])+'</option></select>')+inp(["পরিমাণ (৳)","Amount (৳)"],'<input id="spa" type="number" min="1">')+inp(["কারণ","Purpose"],'<input id="spp" maxlength="300">')+'<button class="btn cs">'+t(["অনুরোধ পাঠান","Send request"])+'</button>')},
+portalmeet:async function(){var r=await Promise.all([SA.rows("meetings"),SA.rows("decisions")]);
+ return '<h2>'+t(["সভা","Meetings"])+'</h2>'+tbl([["তারিখ","Date"],["বিষয়","Topic"],["এজেন্ডা","Agenda"],["কার্যবিবরণী","Minutes"]],r[0].sort(function(a,b){return a.date<b.date?1:-1}).map(function(x){return [x.date,esc(x.title),esc(x.agenda||""),esc((x.minutes||"").slice(0,80))]}))+'<h2>'+t(["সিদ্ধান্ত","Decisions"])+'</h2>'+tbl([["তারিখ","Date"],["বিষয়","Topic"],["ফল","Result"],["ভোট","Votes"]],srt(r[1]).map(function(x){return [dt(x.createdAt),esc(x.title),PS[x.result],x.yes+" / "+x.no]}))},
+portalnt:async function(){var r=srt(await SA.rows("notifications"));return '<h2>'+t(["নোটিফিকেশন","Notifications"])+'</h2>'+(r.map(function(x){return '<div class="card" style="margin-bottom:8px">🔔 <b>'+esc(x.title)+'</b><div class="mu">'+esc(x.body||"")+' · '+dt(x.createdAt)+'</div></div>'}).join("")||'<p class="mu">—</p>')},
+adminexp:async function(){var r=(await SA.rows("expenses")).sort(function(a,b){return a.date<b.date?1:-1});
+ return '<h2>'+t(["খরচ","Expenses"])+'</h2>'+tbl([["তারিখ","Date"],["বিভাগ","Category"],["পরিমাণ","Amount"],["কারণ","Reason"],""],r.map(function(x){return [x.date,esc(x.category),tk(x.amount),esc(x.reason),x.evidence?'<button class="btn o s ev" style="color:var(--ac)" data-p="'+esc(x.evidence)+'">📎</button>':""]}))+frm('<b>'+t(["খরচ যোগ","Add expense"])+'</b>'+inp(["তারিখ","Date"],'<input id="xd" type="date" value="'+new Date().toISOString().slice(0,10)+'">')+inp(["বিভাগ","Category"],'<input id="xc" maxlength="30">')+inp(["পরিমাণ (৳)","Amount (৳)"],'<input id="xa" type="number" min="1">')+inp(["কারণ","Reason"],'<input id="xr" maxlength="300">')+inp(["প্রমাণ (রসিদ, ঐচ্ছিক)","Evidence (optional)"],'<input id="xev" type="file" accept="image/*,application/pdf">')+'<button class="btn xe">'+t(["সংরক্ষণ","Save"])+'</button>')},
+adminln:async function(){var r=await Promise.all([SA.rows("loans"),SA.rows("donations")]);
+ var rows=sup(r[0].concat(r[1])).map(function(x){var ty=x.type,a="";if(x.status=="approved")a='<button class="btn s dsb" data-ty="'+ty+'" data-id="'+esc(x.id)+'">'+t(["বিতরণ","Disburse"])+'</button>';else if(ty=="loan"&&x.status=="disbursed")a='<button class="btn s rpy" data-id="'+esc(x.id)+'">'+t(["ফেরত","Repay"])+'</button>';
+  return [x.memberId,ty=="loan"?["ঋণ","Loan"]:["অনুদান","Donation"],tk(x.amount),PS[x.status]||x.status,ty=="loan"?tk(x.outstanding):"—",a]});
+ return '<h2>'+t(["সহায়তা (ঋণ / অনুদান)","Support (loans / donations)"])+'</h2>'+tbl([["সদস্য","Member"],["ধরন","Type"],["পরিমাণ","Amount"],["অবস্থা","Status"],["বাকি","Outstanding"],""],rows)},
+adminmt:async function(){var r=(await SA.rows("meetings")).sort(function(a,b){return a.date<b.date?1:-1});
+ return '<h2>'+t(["সভা","Meetings"])+'</h2>'+tbl([["তারিখ","Date"],["বিষয়","Topic"],["কার্যবিবরণী","Minutes"],""],r.map(function(x){return [x.date,esc(x.title),esc((x.minutes||"").slice(0,60)),'<button class="btn o s mm" style="color:var(--ac)" data-id="'+esc(x.id)+'">✎</button>']}))+frm('<b>'+t(["নতুন সভা","New meeting"])+'</b>'+inp(["তারিখ","Date"],'<input id="mdt" type="date">')+inp(["বিষয়","Topic"],'<input id="mti" maxlength="150">')+inp(["এজেন্ডা","Agenda"],'<input id="mag" maxlength="1000">')+'<button class="btn sm">'+t(["তৈরি","Create"])+'</button>')+frm('<b>'+t(["নোটিশ পাঠান","Send notice"])+'</b>'+inp(["শিরোনাম","Title"],'<input id="ntt" maxlength="120">')+inp(["বার্তা","Message"],'<input id="ntb" maxlength="500">')+'<button class="btn sn">'+t(["পাঠান","Send"])+'</button>')},
+adminau:async function(){var r=srt(await SA.rows("auditLogs")).slice(0,50);return '<h2>'+t(["অডিট লগ","Audit log"])+'</h2>'+tbl([["সময়","When"],["কাজ","Action"],["কে","By"],["আগে → পরে","Change"]],r.map(function(x){return [dt(x.createdAt),x.action,esc(String(x.performedBy).slice(0,6)),esc((x.previousValue||"")+" → "+(x.newValue||""))]}))},
+adminmem:async function(){var r=(await SA.rows("members")).sort(function(a,b){return a.memberId<b.memberId?-1:1});return '<h2>'+t(["সদস্য","Members"])+'</h2>'+tbl(["ID",["নাম","Name"],["অবস্থা","Status"]],r.map(function(x){return [x.memberId,esc(L=="bn"?x.nameBn:x.nameEn),x.status]}))}
+});
+B.portalvote=function(){return '<h2>'+t(["ভোট ও প্রস্তাব","Votes & proposals"])+'</h2><div class="card"><b>'+t(["সদস্য ৩-এর সহায়তা অনুরোধ","Support request by Member 3"])+'</b><div class="pill">'+t(PS.open)+' · ✓ ৪ / ✗ ০</div></div>'};
+B.adminmt=function(){return '<h2>'+t(["সভা","Meetings"])+'</h2>'+tbl([["তারিখ","Date"],["বিষয়","Topic"]],[["2026-11-15",["মাসিক সভা","Monthly meeting"]]])};
+
+var RP={},RY="all",INC=["contribution","joiningFee","reversal"];
+function yrs(r){var o={};r.forEach(function(x){o[dt(x.createdAt).slice(0,4)]=1});o[new Date().getFullYear()]=1;return Object.keys(o).sort()}
+function ysel(r){return '<label>'+t(["বছর","Year"])+'</label><select id="ryr"><option value="all">'+t(["সব","All"])+'</option>'+yrs(r).map(function(y){return '<option'+(y==RY?' selected':'')+'>'+y+'</option>'}).join('')+'</select>'}
+function fy(x){return RY=="all"||dt(x.createdAt).slice(0,4)==RY}
+function asc(r){return r.sort(function(a,b){return (a.createdAt?a.createdAt.seconds:0)-(b.createdAt?b.createdAt.seconds:0)})}
+function ty(x){return t(TL[x.type]||[x.type,x.type])}
+function rtbl(k,h,raw,fmt){RP[k]=[h.map(function(x){return Array.isArray(x)?x[1]:x})].concat(raw.map(function(r){return r.map(function(c){return Array.isArray(c)?c[1]:c})}));
+ return tbl(h,raw.map(function(r){return r.map(function(c,i){return fmt&&fmt[i]?fmt[i](c):c})}))+'<p><button class="btn o s csv" style="color:var(--ac)" data-k="'+k+'">CSV / Excel</button> <button class="btn o s prn" style="color:var(--ac)">PDF / Print</button></p>'}
+function csv(k){var q=function(x){return '"'+String(x).replace(/"/g,'""')+'"'},s="\ufeff"+RP[k].map(function(r){return r.map(q).join(",")}).join("\n"),a=document.createElement("a");a.href=URL.createObjectURL(new Blob([s],{type:"text/csv;charset=utf-8"}));a.download=k+".csv";a.click()}
+function grp(r){var g={};r.forEach(function(x){var m=dt(x.createdAt).slice(0,7),o=g[m]||(g[m]={m:m,per:0,inc:0,exp:0,out:0,rep:0});
+ o.per+=x.personalShare;if(INC.indexOf(x.type)>=0)o.inc+=x.commonShare;else if(x.type=="expense")o.exp-=x.commonShare;else if(x.type=="loanRepayment")o.rep+=x.commonShare;else o.out-=x.commonShare});
+ return Object.keys(g).sort().map(function(k){var o=g[k];return [o.m,o.per,o.inc,o.exp,o.out,o.rep]})}
+var M$=[tk,tk,tk,tk,tk];
+Object.assign(A,{
+portalrp:async function(){var m=SA.user.memberId,all=await SA.rows("transactions",["memberId","==",m]),r=asc(all.filter(fy)),bal=0;
+ var st=r.map(function(x){bal+=x.personalShare;return [dt(x.createdAt),[TL[x.type]?TL[x.type][0]:x.type,TL[x.type]?TL[x.type][1]:x.type],x.amount,x.personalShare,x.commonShare,bal]});
+ var mo=grp(r).map(function(x){return [x[0],x[1],x[2]]});
+ return '<h2>'+t(["আমার রিপোর্ট","My statement"])+'</h2>'+ysel(all)+'<h3>'+t(["মাসওয়ারি","By month"])+'</h3>'+rtbl("my-monthly",[["মাস","Month"],["ব্যক্তিগত","Personal"],["যৌথ","Common"]],mo,[null,tk,tk])+'<h3>'+t(["স্টেটমেন্ট","Statement"])+'</h3>'+rtbl("my-statement",[["তারিখ","Date"],["ধরন","Type"],["পরিমাণ","Amount"],["ব্যক্তিগত","Personal"],["যৌথ","Common"],["ব্যালেন্স","Balance"]],st,[null,null,tk,tk,tk,tk])},
+adminrp:async function(){var r=await Promise.all([SA.rows("transactions"),SA.doc("commonFund/main"),SA.rows("personalAccounts"),SA.rows("loans"),SA.rows("donations")]);
+ var all=r[0],tx=asc(all.filter(fy)),fund=r[1]||{},S=function(f,g){return tx.filter(f).reduce(function(a,x){return a+g(x)},0)};
+ var led=all.reduce(function(a,x){return a+x.commonShare},0),ok=led==(fund.currentBalance||0);
+ var sum=[[["চাঁদা ও ভর্তি ফি থেকে আয়","Income (contributions/fees)"],S(function(x){return INC.indexOf(x.type)>=0},function(x){return x.commonShare})],
+  [["খরচ","Expenses"],S(function(x){return x.type=="expense"},function(x){return -x.commonShare})],
+  [["ঋণ বিতরণ","Loans disbursed"],S(function(x){return x.type=="loanDisbursement"},function(x){return -x.commonShare})],
+  [["অনুদান","Donations"],S(function(x){return x.type=="donation"},function(x){return -x.commonShare})],
+  [["ঋণ ফেরত","Loan repayments"],S(function(x){return x.type=="loanRepayment"},function(x){return x.commonShare})],
+  [["লেজার অনুযায়ী যৌথ তহবিল (সব সময়)","Common fund per ledger (all time)"],led],
+  [["সংরক্ষিত ব্যালেন্স","Stored balance"],fund.currentBalance||0],
+  [["মিল","Match"],ok?"✓":"✗"]];
+ var per={};all.forEach(function(x){if(x.memberId!="ORG")per[x.memberId]=(per[x.memberId]||0)+x.personalShare});
+ var have={};r[2].forEach(function(x){have[x.id]=x.currentBalance||0});
+ var mem=Object.keys(per).sort().map(function(k){return [k,per[k],have[k]||0,per[k]==(have[k]||0)?"✓":"✗"]});
+ var sup=r[3].concat(r[4]).map(function(x){return [x.memberId,x.type,x.amount,x.status,x.type=="loan"?x.outstanding:0]});
+ return '<h2>'+t(["রিপোর্ট","Reports"])+'</h2>'+ysel(all)+'<h3>'+t(["যৌথ তহবিল","Common fund"])+'</h3>'+rtbl("fund-summary",[["বিষয়","Item"],["পরিমাণ","Amount"]],sum,[null,function(v){return typeof v=="number"?tk(v):v}])+
+ '<h3>'+t(["মাসওয়ারি","Monthly"])+'</h3>'+rtbl("monthly",[["মাস","Month"],["ব্যক্তিগত জমা","Personal"],["যৌথ আয়","Common income"],["খরচ","Expenses"],["সহায়তা বিতরণ","Support out"],["ঋণ ফেরত","Repaid"]],grp(tx),[null,tk,tk,tk,tk,tk])+
+ '<h3>'+t(["সদস্যওয়ারি ব্যালেন্স","Member balances"])+'</h3>'+rtbl("members",[["সদস্য","Member"],["লেজার","Ledger"],["সংরক্ষিত","Stored"],["মিল","Match"]],mem,[null,tk,tk,null])+
+ '<h3>'+t(["ঋণ ও অনুদান","Loans & donations"])+'</h3>'+rtbl("support",[["সদস্য","Member"],["ধরন","Type"],["পরিমাণ","Amount"],["অবস্থা","Status"],["বাকি","Outstanding"]],sup,[null,null,tk,null,tk])}
+});
+B.portalrp=function(){return '<h2>'+t(["আমার রিপোর্ট","My statement"])+'</h2>'+tbl([["মাস","Month"],["ব্যক্তিগত","Personal"],["যৌথ","Common"]],[["2026-11","৳৮০","৳২০"]])};
+B.adminrp=function(){return '<h2>'+t(["রিপোর্ট","Reports"])+'</h2>'+tbl([["বিষয়","Item"],["পরিমাণ","Amount"]],[[["যৌথ তহবিল","Common fund"],"৳৭২০"]])};
+document.addEventListener("change",function(e){if(e.target.id=="ryr"){RY=e.target.value;var vw=e.target.closest(".view");rv(vw.id.slice(2))}});
+
+var AS={pending:["অপেক্ষমাণ","Pending"],voting:["ভোট চলছে","Voting"],approved:["অনুমোদিত","Approved"],rejected:["বাতিল","Rejected"],member:["সদস্য হয়েছে","Member created"]};
+A.adminap=async function(){var r=sup(await SA.rows("applications"));
+ return '<h2>'+t(["সদস্য আবেদন","Membership applications"])+'</h2>'+tbl([["নাম","Name"],["পিতা","Father"],["মাতা","Mother"],["গ্রাম","Village"],["ফোন","Phone"],"Email","bKash",["অবস্থা","Status"],""],r.map(function(x){return [esc(x.firstName+" "+x.lastName),esc(x.fatherName),esc(x.motherName),esc(x.village),esc(x.phone),esc(x.email),esc(x.bkash||"—"),AS[x.status]||x.status,x.status=="pending"?'<button class="btn s apv" data-id="'+esc(x.id)+'">'+t(["ভোটে তুলুন","To vote"])+'</button> <button class="btn o s apr" style="color:var(--ac)" data-id="'+esc(x.id)+'">✗</button>':(x.status=="approved"?'<button class="btn s apm" data-id="'+esc(x.id)+'">'+t(["সদস্য বানান","Create member"])+'</button>':"")]}))};
+B.adminap=function(){return '<h2>'+t(["সদস্য আবেদন","Membership applications"])+'</h2>'+tbl([["নাম","Name"],["গ্রাম","Village"],["অবস্থা","Status"]],[["—","—","—"]])};
+
+var NEWM=null;
+A.adminmem=async function(){var r=(await SA.rows("members")).sort(function(a,b){return a.memberId<b.memberId?-1:1}),act=r.filter(function(x){return x.status=="active"}).length,box="";
+ if(NEWM){box='<div class="note" style="margin-bottom:12px"><b>'+t(["নতুন সদস্য তৈরি হয়েছে — এই তথ্য আর দেখানো হবে না, এখনই কপি করে সদস্যকে দাও","Member created — this is shown only once, copy it now"])+'</b><br>ID: '+esc(NEWM.memberId)+'<br>Email: '+esc(NEWM.email)+'<br>'+t(["অস্থায়ী পাসওয়ার্ড","Temp password"])+': <b>'+esc(NEWM.tempPassword)+'</b><br>'+t(["প্রথম login-এর পর “পাসওয়ার্ড ভুলে গেছেন?” দিয়ে নিজের পাসওয়ার্ড বসাতে বলো।","After first login, ask them to set their own password via “Forgot password?”."])+'</div>';NEWM=null}
+ var form=SA.user.role!="admin"?"":act<6?frm('<b>'+t(["প্রতিষ্ঠাতা সদস্য যোগ (সর্বোচ্চ ৬ জন)","Add founder member (max 6)"])+'</b>'+inp(["নাম (English)","Name (English)"],'<input id="nm_en" maxlength="80">')+inp(["নাম (বাংলা, ঐচ্ছিক)","Name (Bangla, optional)"],'<input id="nm_bn" maxlength="80">')+inp(["ইমেইল","Email"],'<input id="nm_em" type="email" maxlength="120">')+inp(["ভূমিকা","Role"],'<select id="nm_ro"><option value="member">Member</option><option value="treasurer">Treasurer</option></select>')+'<button class="btn am">'+t(["যোগ করুন","Add"])+'</button>'):'<p class="mu">'+t(["৬ জন পূর্ণ। নতুন সদস্য আসবে আবেদন → ভোট → অনুমোদনের পর (আবেদন ট্যাব)।","6 founders reached. New members come via application → vote → approval (Applications tab)."])+'</p>';
+ return box+'<h2>'+t(["সদস্য","Members"])+'</h2>'+tbl(["ID",["নাম","Name"],["অবস্থা","Status"]],r.map(function(x){return [x.memberId,esc(L=="bn"?x.nameBn:x.nameEn),x.status]}))+form};
+A.portalorg=async function(){var r=await Promise.all([SA.doc("publicSummary/main"),SA.rows("members")]),x=r[0]||{};
+ return '<h2>'+t(["সংগঠনের আর্থিক সারাংশ","Organization financial summary"])+'</h2><div class="grid">'+card(tk(x.totalDeposited),["মোট জমা","Total deposited"])+card(tk(x.personalTotal),["ব্যক্তিগত হিসাব (সম্মিলিত)","Personal accounts (combined)"])+card(tk(x.commonFund),["যৌথ তহবিল","Common fund"])+card(tk(x.totalExpense),["মোট খরচ","Total expenses"])+card(tk(x.loansOutstanding),["বকেয়া ঋণ","Loans outstanding"])+'</div><h2>'+t(["সদস্যবৃন্দ","Members"])+'</h2>'+tbl(["ID",["নাম","Name"]],r[1].filter(function(m){return m.status=="active"}).sort(function(a,b){return a.memberId<b.memberId?-1:1}).map(function(m){return [m.memberId,esc(L=="bn"?m.nameBn:m.nameEn)]}))};
+B.portalorg=function(){return '<h2>'+t(["সংগঠনের আর্থিক সারাংশ","Organization financial summary"])+'</h2><div class="grid">'+card("৳৩,৬০০",["মোট জমা","Total deposited"])+card("৳৭২০",["যৌথ তহবিল","Common fund"])+'</div>'};
+
+function rv(id){var v=V[id];$("#v-"+id).innerHTML='<div class="tabs">'+v.tabs.map(function(x){return '<button class="btn s'+(x[0]==v.cur?'':' o')+'" style="'+(x[0]==v.cur?'':'color:var(--ac)')+'" data-t="'+x[0]+'">'+t(x[1])+'</button>'}).join('')+(SA.mode=="firebase"&&SA.user&&SA.user.staff?'<button class="btn o s sw" data-to="'+(id=="admin"?"portal":"admin")+'" style="color:var(--ac)">⇄ '+(id=="admin"?"Portal":"Admin")+'</button>':"")+'<span style="flex:1"></span><button class="btn o s lo" style="color:var(--ac)">'+t(["লগআউট","Logout"])+'</button></div>'+(AK(id+v.cur)?'<div id="ab">…</div>':B[id+v.cur]())+(SA.mode=="firebase"?"":'<div class="note" style="margin-top:14px">'+D[L].demo+'</div>');if(AK(id+v.cur))A[id+v.cur]().then(function(h){var e=$("#ab");if(e)e.innerHTML=h}).catch(function(x){var e=$("#ab");if(e)e.textContent=x.message});if(id=="portal"&&v.cur=="pro"&&SA.load)SA.load().then(function(x){var i=$("#pph");if(i)i.value=x||""})}
+document.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;var vw=b.closest(".view"),id=vw&&vw.id.slice(2),c=b.classList,v=function(x){return $("#"+x).value.trim()},n=function(x){return parseInt($("#"+x).value,10)||0};
+function done(p){p.then(function(){rv(id)}).catch(function(x){alert(x.message)})}
+function call(a,b2){return SA.call(a,b2)}
+if(c.contains("lo")){if(SA.out)SA.out();location.hash="home"}
+else if(c.contains("csv"))csv(b.dataset.k);
+else if(c.contains("prn"))window.print();
+else if(c.contains("sw"))location.hash=b.dataset.to;
+else if(c.contains("vb"))b.outerHTML="✓";
+else if(c.contains("sv")){SA.save&&SA.save($("#pph").value.trim()).then(function(){$("#pmsg").textContent="✓"}).catch(function(){$("#pmsg").textContent="✗"})}
+else if(c.contains("sp"))done(call("submitPayment",{type:$("#pty").value,month:$("#pmo").value,reference:$("#prf").value}));
+else if(c.contains("ver")||c.contains("rej"))done(call(c.contains("ver")?"verifyPayment":"rejectPayment",{type:b.dataset.ty,paymentId:b.dataset.id}));
+else if(c.contains("rvs")){var r=prompt(t(["কারণ লিখুন","Enter reason"]));if(r)done(call("reversePayment",{transactionId:b.dataset.id,reason:r}))}
+else if(c.contains("rec"))call("reconcile").then(function(r){$("#rmsg").textContent=r.ok?"✓ OK ("+r.checked+")":"✗ "+JSON.stringify(r.mismatches)});
+else if(c.contains("cv"))done(call("castVote",{proposalId:b.dataset.id,vote:b.dataset.v}));
+else if(c.contains("cp"))done(call("createProposal",{kind:$("#ppk").value,title:v("ppt")}));
+else if(c.contains("cs"))done(call("createProposal",{kind:"support",supportType:$("#spt").value,amount:n("spa"),purpose:v("spp")}));
+else if(c.contains("xe")){var f=$("#xev").files[0];done((f?SA.upload(f):Promise.resolve("")).then(function(ev){return call("recordExpense",{date:v("xd"),category:v("xc"),amount:n("xa"),reason:v("xr"),evidence:ev})}))}
+else if(c.contains("ev"))SA.url(b.dataset.p).then(function(u){window.open(u,"_blank")});
+else if(c.contains("dsb"))done(call("recordDisbursement",{type:b.dataset.ty,id:b.dataset.id}));
+else if(c.contains("rpy")){var a=parseInt(prompt(t(["ফেরতের পরিমাণ (৳)","Repayment amount (৳)"])),10);if(a)done(call("recordRepayment",{loanId:b.dataset.id,amount:a}))}
+else if(c.contains("apv")||c.contains("apr"))done(call("reviewApplication",{id:b.dataset.id,action:c.contains("apv")?"propose":"reject"}));
+else if(c.contains("am"))done(call("createMember",{nameEn:v("nm_en"),nameBn:v("nm_bn"),email:v("nm_em"),role:$("#nm_ro").value}).then(function(r){NEWM=r}));
+else if(c.contains("apm"))done(call("createMember",{applicationId:b.dataset.id}).then(function(r){NEWM=r;V.admin.cur="mem"}));
+else if(c.contains("sm"))done(call("saveMeeting",{date:v("mdt"),title:v("mti"),agenda:v("mag")}));
+else if(c.contains("mm")){var mn=prompt(t(["কার্যবিবরণী লিখুন","Enter minutes"]));if(mn)done(call("saveMeeting",{id:b.dataset.id,minutes:mn}))}
+else if(c.contains("sn"))done(call("sendNotice",{title:v("ntt"),body:v("ntb")}));
+else if(b.dataset.t){V[id].cur=b.dataset.t;rv(id)}});
+$("#tL").onclick=function(){sw(0)};$("#tA").onclick=function(){sw(1)};
+function sw(a){$("#cLogin").style.display=a?"none":"";$("#cApply").style.display=a?"":"none";$("#tL").className="btn s"+(a?" o":"");$("#tA").className="btn s"+(a?"":" o");$("#tL").style.color=a?"var(--ac)":"";$("#tA").style.color=a?"":"var(--ac)"}
+$("#apgo").onclick=function(){var g=function(x){return $("#ap_"+x).value.trim()},m=$("#apmsg"),d=D[L],
+ ph=function(v){v=v.replace(/[০-৯]/g,function(c){return "০১২৩৪৫৬৭৮৯".indexOf(c)}).replace(/[\s-]/g,"");return v.indexOf("+880")==0?"0"+v.slice(4):v.indexOf("880")==0?"0"+v.slice(3):v},
+ p={firstName:g("fn"),lastName:g("ln"),fatherName:g("fa"),motherName:g("mo"),village:g("vi"),phone:ph(g("ph")),email:g("em").toLowerCase(),bkash:g("bk")?ph(g("bk")):"",website:g("hp")};
+ m.textContent="";
+ if(!p.firstName||!p.lastName||!p.fatherName||!p.motherName||!p.village||!p.phone||!p.email){m.textContent=d.apReq;return}
+ if(!/^01[3-9][0-9]{8}$/.test(p.phone)||(p.bkash&&!/^01[3-9][0-9]{8}$/.test(p.bkash))){m.textContent=d.apPhone;return}
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(p.email)){m.textContent=d.apMail;return}
+ if(SA.mode!="firebase"){m.textContent=d.apOk+" (demo)";return}
+ SA.call("submitApplication",p).then(function(){m.textContent=d.apOk;["fn","ln","fa","mo","vi","ph","em","bk"].forEach(function(k){$("#ap_"+k).value=""})}).catch(function(x){m.textContent=x.message=="DUP"?d.apDup:d.apErr})};
+$("#lang").onclick=function(){L=L=="bn"?"en":"bn";tr()};
+$("#go").onclick=function(){var e=$("#le").value.trim(),p=$("#lp").value;$("#lerr").textContent="";
+if(SA.mode!="firebase"){location.hash=/admin/i.test(e)?"admin":"portal";return}
+SA.login(e,p).then(function(u){location.hash=u.staff?"admin":"portal"}).catch(function(x){$("#lerr").textContent=D[L][x.message=="inactive"?"eInact":"eAuth"]})};
+$("#fp").onclick=function(ev){ev.preventDefault();var e=$("#le").value.trim();if(SA.mode!="firebase")return;if(!e){$("#lerr").textContent=D[L].eMail;return}SA.reset(e).then(function(){$("#lerr").textContent=D[L].eReset})};
+$("#send").onclick=function(){$("#sent").textContent=D[L].sent};
+addEventListener("hashchange",route);tr();route();
+</script>
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import{getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged,sendPasswordResetEmail}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import{getFunctions,httpsCallable}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-functions.js";
+import{getStorage,ref,uploadBytes,getDownloadURL}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
+import{getFirestore,doc,getDoc,setDoc,collection,query,where,getDocs}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+// ▼▼ Firebase Console → Project settings → Your apps → Web app থেকে এই মানগুলো বসাও ▼▼
+const cfg={apiKey:"AIzaSyDHl6SNaZ7pLoLG-_MZtn3oZasCJMDm0vM",authDomain:"sixfold-alliance.firebaseapp.com",projectId:"sixfold-alliance",storageBucket:"sixfold-alliance.firebasestorage.app",appId:"1:282472030323:web:7c79acb25942e3780cca06"};
+// ▲▲ মান না বসালে সাইট Demo mode-এ চলবে ▲▲
+if(!cfg.apiKey.startsWith("YOUR")){
+const app=initializeApp(cfg),auth=getAuth(app),db=getFirestore(),fn=getFunctions(app,"asia-south1");
+SA.mode="firebase";SA.ready=false;
+async function load(u){
+ const c=(await u.getIdTokenResult(true)).claims;
+ const us=await getDoc(doc(db,"users",u.uid));
+ if(!c.role||!us.exists()||us.data().status!=="active"){await signOut(auth);throw new Error("inactive")}
+ const m=await getDoc(doc(db,"members",c.memberId));const d=m.exists()?m.data():{};
+ SA.user={uid:u.uid,role:c.role,memberId:c.memberId,staff:c.role==="admin"||c.role==="treasurer",nameBn:d.nameBn||"",nameEn:d.nameEn||"",get name(){return L=="bn"?this.nameBn:this.nameEn}};
+ return SA.user}
+SA.login=async(e,p)=>load((await signInWithEmailAndPassword(auth,e,p)).user);
+SA.reset=e=>sendPasswordResetEmail(auth,e).catch(()=>{});
+SA.out=()=>signOut(auth);
+SA.load=async()=>{const s=await getDoc(doc(db,"members",SA.user.memberId,"private","profile"));return s.exists()?s.data().phone:""};
+SA.save=ph=>setDoc(doc(db,"members",SA.user.memberId,"private","profile"),{phone:ph});
+SA.rows=(c,w)=>getDocs(w?query(collection(db,c),where(w[0],w[1],w[2])):collection(db,c)).then(s=>s.docs.map(d=>({id:d.id,...d.data()})));
+SA.doc=p=>getDoc(doc(db,p)).then(s=>s.exists()?s.data():null);
+SA.upload=async f=>{const p="receipts/"+Date.now()+"-"+f.name.replace(/[^A-Za-z0-9._-]/g,"_");await uploadBytes(ref(getStorage(app),p),f);return p};
+SA.url=p=>getDownloadURL(ref(getStorage(app),p));
+SA.call=(n,d)=>httpsCallable(fn,n)(d||{}).then(r=>r.data);
+onAuthStateChanged(auth,async u=>{
+ try{if(u)await load(u);else SA.user=null}catch(e){SA.user=null}
+ SA.ready=true;rv("portal");rv("admin");route()});
+}
+</script>
+</body>
+</html>
