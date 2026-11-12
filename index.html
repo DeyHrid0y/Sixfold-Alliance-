@@ -249,7 +249,7 @@ portalmeet:async function(){var r=await Promise.all([SA.rows("meetings"),SA.rows
  return '<h2>'+t(["সভা","Meetings"])+'</h2>'+tbl([["তারিখ","Date"],["বিষয়","Topic"],["এজেন্ডা","Agenda"],["কার্যবিবরণী","Minutes"]],r[0].sort(function(a,b){return a.date<b.date?1:-1}).map(function(x){return [x.date,esc(x.title),esc(x.agenda||""),esc((x.minutes||"").slice(0,80))]}))+'<h2>'+t(["সিদ্ধান্ত","Decisions"])+'</h2>'+tbl([["তারিখ","Date"],["বিষয়","Topic"],["ফল","Result"],["ভোট","Votes"]],srt(r[1]).map(function(x){return [dt(x.createdAt),esc(x.title),PS[x.result],x.yes+" / "+x.no]}))},
 portalnt:async function(){var r=srt(await SA.rows("notifications"));return '<h2>'+t(["নোটিফিকেশন","Notifications"])+'</h2>'+(r.map(function(x){return '<div class="card" style="margin-bottom:8px">🔔 <b>'+esc(x.title)+'</b><div class="mu">'+esc(x.body||"")+' · '+dt(x.createdAt)+'</div></div>'}).join("")||'<p class="mu">—</p>')},
 adminexp:async function(){var r=(await SA.rows("expenses")).sort(function(a,b){return a.date<b.date?1:-1});
- return '<h2>'+t(["খরচ","Expenses"])+'</h2>'+tbl([["তারিখ","Date"],["বিভাগ","Category"],["পরিমাণ","Amount"],["কারণ","Reason"],""],r.map(function(x){return [x.date,esc(x.category),tk(x.amount),esc(x.reason),x.evidence?'<button class="btn o s ev" style="color:var(--ac)" data-p="'+esc(x.evidence)+'">📎</button>':""]}))+frm('<b>'+t(["খরচ যোগ","Add expense"])+'</b>'+inp(["তারিখ","Date"],'<input id="xd" type="date" value="'+new Date().toISOString().slice(0,10)+'">')+inp(["বিভাগ","Category"],'<input id="xc" maxlength="30">')+inp(["পরিমাণ (৳)","Amount (৳)"],'<input id="xa" type="number" min="1">')+inp(["কারণ","Reason"],'<input id="xr" maxlength="300">')+inp(["প্রমাণ (রসিদ, ঐচ্ছিক)","Evidence (optional)"],'<input id="xev" type="file" accept="image/*,application/pdf">')+'<button class="btn xe">'+t(["সংরক্ষণ","Save"])+'</button>')},
+ return '<h2>'+t(["খরচ","Expenses"])+'</h2>'+tbl([["তারিখ","Date"],["বিভাগ","Category"],["পরিমাণ","Amount"],["কারণ","Reason"],""],r.map(function(x){return [x.date,esc(x.category),tk(x.amount),esc(x.reason),esc(x.evidence||"")]}))+frm('<b>'+t(["খরচ যোগ","Add expense"])+'</b>'+inp(["তারিখ","Date"],'<input id="xd" type="date" value="'+new Date().toISOString().slice(0,10)+'">')+inp(["বিভাগ","Category"],'<input id="xc" maxlength="30">')+inp(["পরিমাণ (৳)","Amount (৳)"],'<input id="xa" type="number" min="1">')+inp(["কারণ","Reason"],'<input id="xr" maxlength="300">')+inp(["রসিদ/প্রমাণ নম্বর (ঐচ্ছিক)","Receipt/evidence no. (optional)"],'<input id="xev" maxlength="100">')+'<button class="btn xe">'+t(["সংরক্ষণ","Save"])+'</button>')},
 adminln:async function(){var r=await Promise.all([SA.rows("loans"),SA.rows("donations")]);
  var rows=sup(r[0].concat(r[1])).map(function(x){var ty=x.type,a="";if(x.status=="approved")a='<button class="btn s dsb" data-ty="'+ty+'" data-id="'+esc(x.id)+'">'+t(["বিতরণ","Disburse"])+'</button>';else if(ty=="loan"&&x.status=="disbursed")a='<button class="btn s rpy" data-id="'+esc(x.id)+'">'+t(["ফেরত","Repay"])+'</button>';
   return [x.memberId,ty=="loan"?["ঋণ","Loan"]:["অনুদান","Donation"],tk(x.amount),PS[x.status]||x.status,ty=="loan"?tk(x.outstanding):"—",a]});
@@ -335,8 +335,7 @@ else if(c.contains("rec"))call("reconcile").then(function(r){$("#rmsg").textCont
 else if(c.contains("cv"))done(call("castVote",{proposalId:b.dataset.id,vote:b.dataset.v}));
 else if(c.contains("cp"))done(call("createProposal",{kind:$("#ppk").value,title:v("ppt")}));
 else if(c.contains("cs"))done(call("createProposal",{kind:"support",supportType:$("#spt").value,amount:n("spa"),purpose:v("spp")}));
-else if(c.contains("xe")){var f=$("#xev").files[0];done((f?SA.upload(f):Promise.resolve("")).then(function(ev){return call("recordExpense",{date:v("xd"),category:v("xc"),amount:n("xa"),reason:v("xr"),evidence:ev})}))}
-else if(c.contains("ev"))SA.url(b.dataset.p).then(function(u){window.open(u,"_blank")});
+else if(c.contains("xe"))done(call("recordExpense",{date:v("xd"),category:v("xc"),amount:n("xa"),reason:v("xr"),evidence:v("xev")}));
 else if(c.contains("dsb"))done(call("recordDisbursement",{type:b.dataset.ty,id:b.dataset.id}));
 else if(c.contains("rpy")){var a=parseInt(prompt(t(["ফেরতের পরিমাণ (৳)","Repayment amount (৳)"])),10);if(a)done(call("recordRepayment",{loanId:b.dataset.id,amount:a}))}
 else if(c.contains("apv")||c.contains("apr"))done(call("reviewApplication",{id:b.dataset.id,action:c.contains("apv")?"propose":"reject"}));
@@ -362,40 +361,149 @@ document.addEventListener("click",function(){$("#nav").classList.remove("open")}
 $("#lang").onclick=function(){L=L=="bn"?"en":"bn";tr()};
 $("#go").onclick=function(){var e=$("#le").value.trim(),p=$("#lp").value;$("#lerr").textContent="";
 if(SA.mode!="firebase"){location.hash=/admin/i.test(e)?"admin":"portal";return}
-SA.login(e,p).then(function(u){location.hash=u.staff?"admin":"portal"}).catch(function(x){console.error(x);$("#lerr").textContent=D[L][x.message=="inactive"?"eInact":"eAuth"]+" ["+(x.code||x.message)+"]"})};
+SA.login(e,p).then(function(u){location.hash=u.staff?"admin":"portal"}).catch(function(x){$("#lerr").textContent=D[L][x.message=="inactive"?"eInact":"eAuth"]})};
 $("#fp").onclick=function(ev){ev.preventDefault();var e=$("#le").value.trim();if(SA.mode!="firebase")return;if(!e){$("#lerr").textContent=D[L].eMail;return}SA.reset(e).then(function(){$("#lerr").textContent=D[L].eReset})};
 $("#send").onclick=function(){$("#sent").textContent=D[L].sent};
 addEventListener("hashchange",route);tr();route();
 </script>
 <script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import{getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged,sendPasswordResetEmail}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import{getFunctions,httpsCallable}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-functions.js";
-import{getStorage,ref,uploadBytes,getDownloadURL}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
-import{getFirestore,doc,getDoc,setDoc,collection,query,where,getDocs}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import{initializeApp,deleteApp}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import{getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged,sendPasswordResetEmail,createUserWithEmailAndPassword}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import{getFirestore,doc,getDoc,setDoc,collection,query,where,getDocs,writeBatch,serverTimestamp,increment}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 // ▼▼ Firebase Console → Project settings → Your apps → Web app থেকে এই মানগুলো বসাও ▼▼
 const cfg={apiKey:"AIzaSyDHl6SNaZ7pLoLG-_MZtn3oZasCJMDm0vM",authDomain:"sixfold-alliance.firebaseapp.com",projectId:"sixfold-alliance",storageBucket:"sixfold-alliance.firebasestorage.app",appId:"1:282472030323:web:7c79acb25942e3780cca06"};
 // ▲▲ মান না বসালে সাইট Demo mode-এ চলবে ▲▲
 if(!cfg.apiKey.startsWith("YOUR")){
-const app=initializeApp(cfg),auth=getAuth(app),db=getFirestore(),fn=getFunctions(app,"asia-south1");
+const app=initializeApp(cfg),auth=getAuth(app),db=getFirestore(app);
 SA.mode="firebase";SA.ready=false;
-async function load(u){
- const c=(await u.getIdTokenResult(true)).claims;
- const us=await getDoc(doc(db,"users",u.uid));
- if(!c.role||!us.exists()||us.data().status!=="active"){await signOut(auth);throw new Error("inactive")}
- const m=await getDoc(doc(db,"members",c.memberId));const d=m.exists()?m.data():{};
- SA.user={uid:u.uid,role:c.role,memberId:c.memberId,staff:c.role==="admin"||c.role==="treasurer",nameBn:d.nameBn||"",nameEn:d.nameEn||"",get name(){return L=="bn"?this.nameBn:this.nameEn}};
- return SA.user}
+// ===== Lite mode: Cloud Functions ছাড়া। নিয়ম জোর করে Firestore rules (firebase/firestore.rules) =====
+const D=p=>doc(db,p),ts=()=>serverTimestamp(),need=(c,m)=>{if(!c)throw new Error(m)};
+const gd=async p=>{try{return await getDoc(D(p))}catch(e){return{exists:()=>false,data:()=>null}}};
+const me=()=>SA.user,uid=()=>auth.currentUser.uid,staff=()=>need(me()&&me().staff,"Staff only"),adm=()=>need(me()&&me().role==="admin","Admin only");
+const COL={monthly:"contributions",joining:"joiningFees"},FEE={monthly:100,joining:500},FLD={income:"totalIncome",expense:"totalExpense",loan:"totalLoanOut",donation:"totalDonation",repay:"totalRepaid"};
+const KINDS=["general","support","member","amendment","dissolution"],UN=["amendment","member","dissolution"],NEED={general:5,support:4},FOUNDERS=6;
+const sp=a=>{const p=Math.floor(a*80/100);return{p:p,c:a-p}};
+const rows0=(c,w)=>getDocs(w?query(collection(db,c),where(w[0],w[1],w[2])):collection(db,c)).then(s=>s.docs.map(d=>({id:d.id,...d.data()})));
+function resolve(k,y,n,e){if(UN.includes(k))return n>0?"rejected":y>=e?"approved":"open";const nd=Math.min(NEED[k],e);return y>=nd?"approved":n>e-nd?"rejected":"open"}
+// ভোটের ফল সবসময় ভোট থেকে হিসাব হয় (৬ প্রতিষ্ঠাতা ধরে; সহায়তায় সংশ্লিষ্ট সদস্য বাদে ৫)
+async function enrich(rs){return Promise.all(rs.map(async p=>{const vs=await getDocs(collection(db,"proposals/"+p.id+"/votes")),votes={};vs.forEach(v=>{votes[v.id]=v.data().vote});const a=Object.values(votes),y=a.filter(v=>v==="yes").length,n=a.length-y,el=FOUNDERS-(p.kind==="support"?1:0);return{...p,votes,yesCount:y,noCount:n,eligible:el,status:resolve(p.kind,y,n,el)}}))}
+SA.rows=async(c,w)=>{
+ if(c==="proposals")return enrich(await rows0(c,w));
+ if(c==="decisions")return(await SA.rows("proposals")).filter(p=>p.status!=="open").map(p=>({id:p.id,title:p.title,result:p.status,yes:p.yesCount,no:p.noCount,createdAt:p.createdAt}));
+ if(c==="applications"){const a=await rows0(c,w);if(!a.some(x=>x.status==="voting"))return a;const pr=await SA.rows("proposals");return a.map(x=>{if(x.status!=="voting")return x;const p=pr.find(q=>q.id===x.proposalId);return{...x,status:p&&p.status!=="open"?p.status:"voting"}})}
+ return rows0(c,w)};
+SA.doc=async p=>{const s=await gd(p);return s.exists()?s.data():null};
+function post(b,m,p,c,kind){if(p!==0&&m!=="ORG")b.set(D("personalAccounts/"+m),{memberId:m,totalDeposit:increment(p),currentBalance:increment(p),updatedAt:ts()},{merge:true});
+ b.set(D("commonFund/main"),{fundId:"main",[FLD[kind]]:increment(kind==="income"?c:Math.abs(c)),currentBalance:increment(c),updatedAt:ts()},{merge:true})}
+const aud=(b,a,t,p,n,r)=>b.set(doc(collection(db,"auditLogs")),{action:a,performedBy:uid(),targetId:t||"",previousValue:p||"",newValue:n||"",reason:r||"",createdAt:ts()});
+const notice=(b,t,body)=>b.set(doc(collection(db,"notifications")),{title:t,body:body||"",createdAt:ts()});
+const tx=(b,id,o)=>b.set(D("transactions/"+id),{transactionId:id,status:"verified",createdBy:uid(),createdAt:ts(),...o});
+const H={};
+H.submitPayment=async d=>{const m=me().memberId,ref=String(d.reference||"").trim().toUpperCase();
+ need(FEE[d.type],"Bad type");need(/^[A-Z0-9]{6,30}$/.test(ref),"Reference must be 6-30 letters/digits");
+ if(d.type==="monthly")need(/^\d{4}-(0[1-9]|1[0-2])$/.test(d.month||""),"Bad month");
+ const id=d.type==="monthly"?"CON-"+m+"-"+d.month:"JOIN-"+m,pp=COL[d.type]+"/"+id,old=await gd(pp),b=writeBatch(db);
+ if(old.exists()){need(["rejected","reversed"].includes(old.data().status),"Already submitted");b.update(D(pp),{reference:ref,status:"pending",attempt:old.data().attempt+1,createdAt:ts()})}
+ else b.set(D(pp),{id,memberId:m,type:d.type,...(d.type==="monthly"?{month:d.month}:{}),amount:FEE[d.type],reference:ref,status:"pending",attempt:1,submittedBy:uid(),createdAt:ts()});
+ b.set(D("paymentRefs/"+ref),{memberId:m,createdAt:ts()});
+ try{await b.commit()}catch(e){throw new Error(e.code==="permission-denied"?"Already submitted, or this reference was already used":e.message)}return{id}};
+H.verifyPayment=async d=>{staff();const s=await gd(COL[d.type]+"/"+d.paymentId);need(s.exists(),"Not found");const p=s.data();
+ need(p.status==="pending","Not pending");need(p.memberId!==me().memberId,"You cannot verify your own payment");
+ const x=sp(p.amount),tid="TRX-"+d.paymentId+"-"+p.reference,b=writeBatch(db);
+ b.update(D(COL[d.type]+"/"+d.paymentId),{status:"verified",verifiedBy:uid(),verifiedAt:ts()});
+ tx(b,tid,{memberId:p.memberId,type:d.type==="monthly"?"contribution":"joiningFee",amount:p.amount,personalShare:x.p,commonShare:x.c,paymentId:d.paymentId,paymentType:d.type,description:d.type==="monthly"?p.month+" monthly contribution":"Joining fee"});
+ post(b,p.memberId,x.p,x.c,"income");aud(b,"PAYMENT_VERIFIED",tid,"pending","verified");await b.commit();return{ok:true}};
+H.rejectPayment=async d=>{staff();const pp=COL[d.type]+"/"+d.paymentId,s=await gd(pp);need(s.exists()&&s.data().status==="pending","Not pending");need(s.data().memberId!==me().memberId,"You cannot reject your own payment");
+ const b=writeBatch(db);b.update(D(pp),{status:"rejected",rejectedBy:uid()});b.delete(D("paymentRefs/"+s.data().reference));aud(b,"PAYMENT_REJECTED",d.paymentId,"pending","rejected");await b.commit();return{ok:true}};
+H.reversePayment=async d=>{adm();const reason=String(d.reason||"").trim().slice(0,300);need(d.transactionId&&reason.length>=3,"Transaction and reason required");
+ const o=await gd("transactions/"+d.transactionId);need(o.exists()&&["contribution","joiningFee"].includes(o.data().type),"Cannot reverse this entry");const t=o.data();
+ need(!(await gd("transactions/REV-"+d.transactionId)).exists(),"Already reversed");const b=writeBatch(db),rid="REV-"+d.transactionId;
+ tx(b,rid,{memberId:t.memberId,type:"reversal",amount:-t.amount,personalShare:-t.personalShare,commonShare:-t.commonShare,reverses:d.transactionId,paymentId:t.paymentId,paymentType:t.paymentType,description:"Reversal: "+reason});
+ post(b,t.memberId,-t.personalShare,-t.commonShare,"income");b.update(D(COL[t.paymentType]+"/"+t.paymentId),{status:"reversed"});
+ aud(b,"TRANSACTION_REVERSED",d.transactionId,"verified","reversed",reason);
+ try{await b.commit()}catch(e){throw new Error(e.code==="permission-denied"?"Not allowed (you cannot reverse your own payment)":e.message)}return{ok:true}};
+H.reconcile=async()=>{staff();const[t,a,f]=await Promise.all([getDocs(collection(db,"transactions")),getDocs(collection(db,"personalAccounts")),gd("commonFund/main")]);
+ const per={};let common=0;t.forEach(d=>{const x=d.data();per[x.memberId]=(per[x.memberId]||0)+x.personalShare;common+=x.commonShare});
+ const have={};a.forEach(d=>{have[d.id]=d.data().currentBalance||0});const mm=[];
+ new Set([...Object.keys(per),...Object.keys(have)]).forEach(k=>{if((per[k]||0)!==(have[k]||0))mm.push({memberId:k,ledger:per[k]||0,stored:have[k]||0})});
+ const sc=f.exists()?f.data().currentBalance||0:0;if(common!==sc)mm.push({fund:"common",ledger:common,stored:sc});
+ return{ok:!mm.length,checked:t.size,mismatches:mm}};
+H.recordExpense=async d=>{staff();const amt=d.amount,cat=String(d.category||"").trim(),rs=String(d.reason||"").trim();
+ need(Number.isInteger(amt)&&amt>0&&amt<=1e7,"Bad amount");need(cat.length>=2&&cat.length<=30,"Bad category");need(rs.length>=3&&rs.length<=300,"Bad reason");need(/^\d{4}-\d{2}-\d{2}$/.test(d.date||""),"Bad date");
+ const f=await gd("commonFund/main");need((f.exists()?f.data().currentBalance||0:0)>=amt,"Not enough common fund");
+ const ref=doc(collection(db,"expenses")),b=writeBatch(db);
+ b.set(ref,{id:ref.id,category:cat,reason:rs,amount:amt,date:d.date,evidence:String(d.evidence||"").slice(0,100),recordedBy:uid(),createdAt:ts()});
+ tx(b,"TRX-EXP-"+ref.id,{memberId:"ORG",type:"expense",amount:-amt,personalShare:0,commonShare:-amt,description:cat+": "+rs});
+ post(b,"ORG",0,-amt,"expense");aud(b,"EXPENSE_RECORDED",ref.id,"",String(amt),rs);await b.commit();return{id:ref.id}};
+H.createProposal=async d=>{const m=me().memberId;need(KINDS.includes(d.kind),"Bad kind");const ref=doc(collection(db,"proposals")),x={id:ref.id,kind:d.kind,createdBy:m,createdAt:ts()};
+ if(d.kind==="support"){need(["loan","donation"].includes(d.supportType),"Bad support type");need(Number.isInteger(d.amount)&&d.amount>0&&d.amount<=1e7,"Bad amount");const pu=String(d.purpose||"").trim();need(pu.length>=3,"Purpose required");
+  Object.assign(x,{title:"Support request ("+d.supportType+")",subjectMemberId:m,supportType:d.supportType,amount:d.amount,purpose:pu.slice(0,300)})}
+ else{const t=String(d.title||"").trim();need(t.length>=3,"Title required");x.title=t.slice(0,200)}
+ await setDoc(ref,x);return{id:ref.id}};
+H.castVote=async d=>{need(["yes","no"].includes(d.vote),"Bad vote");
+ try{await setDoc(D("proposals/"+d.proposalId+"/votes/"+me().memberId),{vote:d.vote,createdAt:ts()})}catch(e){throw new Error("Already voted, or you cannot vote on this")}return{ok:true}};
+H.recordDisbursement=async d=>{staff();const p=(await SA.rows("proposals")).find(x=>x.id===d.id);need(p&&p.kind==="support"&&p.status==="approved","Not approved by vote");
+ need(p.subjectMemberId!==me().memberId,"You cannot disburse your own support");
+ const ln=p.supportType==="loan",lid=(ln?"LOAN-":"DON-")+p.id,col=ln?"loans":"donations";need(!(await gd(col+"/"+lid)).exists(),"Already disbursed");
+ const f=await gd("commonFund/main");need((f.exists()?f.data().currentBalance||0:0)>=p.amount,"Not enough common fund");const b=writeBatch(db);
+ b.set(D(col+"/"+lid),{id:lid,memberId:p.subjectMemberId,type:p.supportType,amount:p.amount,purpose:p.purpose,proposalId:p.id,status:"disbursed",disbursedBy:uid(),...(ln?{outstanding:p.amount,repaid:0,repayments:0}:{}),createdAt:ts()});
+ tx(b,"TRX-DISB-"+lid,{memberId:p.subjectMemberId,type:ln?"loanDisbursement":"donation",amount:-p.amount,personalShare:0,commonShare:-p.amount,description:p.purpose});
+ post(b,p.subjectMemberId,0,-p.amount,ln?"loan":"donation");aud(b,"SUPPORT_DISBURSED",lid,"approved","disbursed");await b.commit();return{ok:true}};
+H.recordRepayment=async d=>{staff();const s=await gd("loans/"+d.loanId);need(s.exists()&&s.data().status==="disbursed","Loan not active");const l=s.data(),a=d.amount;
+ need(l.memberId!==me().memberId,"You cannot record your own repayment");need(Number.isInteger(a)&&a>0&&a<=l.outstanding,"Bad amount (more than outstanding?)");
+ const n=l.repayments+1,left=l.outstanding-a,b=writeBatch(db);
+ b.update(D("loans/"+d.loanId),{outstanding:left,repaid:l.repaid+a,repayments:n,status:left===0?"repaid":"disbursed"});
+ tx(b,"TRX-REP-"+d.loanId+"-"+n,{memberId:l.memberId,type:"loanRepayment",amount:a,personalShare:0,commonShare:a,description:"Repayment "+d.loanId});
+ post(b,l.memberId,0,a,"repay");aud(b,"LOAN_REPAYMENT",d.loanId,String(l.outstanding),String(left));await b.commit();return{ok:true}};
+H.saveMeeting=async d=>{staff();const isNew=!d.id,ref=isNew?doc(collection(db,"meetings")):D("meetings/"+d.id),x={};
+ if(isNew||d.date){need(/^\d{4}-\d{2}-\d{2}$/.test(d.date||""),"Bad date");x.date=d.date}
+ if(isNew||d.title){const t=String(d.title||"").trim();need(t.length>=3,"Bad title");x.title=t.slice(0,150)}
+ if(d.agenda!==undefined)x.agenda=String(d.agenda).slice(0,1000);if(d.minutes!==undefined)x.minutes=String(d.minutes).slice(0,4000);
+ const b=writeBatch(db);b.set(ref,{...x,id:ref.id,updatedAt:ts(),...(isNew?{createdAt:ts()}:{})},{merge:true});
+ if(isNew)notice(b,"সভার নোটিশ / Meeting notice",x.date+" — "+x.title);aud(b,isNew?"MEETING_CREATED":"MEETING_UPDATED",ref.id);await b.commit();return{id:ref.id}};
+H.sendNotice=async d=>{staff();const t=String(d.title||"").trim(),body=String(d.body||"").trim();need(t.length>=3&&t.length<=120,"Title required");const b=writeBatch(db);notice(b,t,body.slice(0,500));aud(b,"NOTICE_SENT","","",t);await b.commit();return{ok:true}};
+H.submitApplication=async d=>{if(d.website)return{ok:true};const s=k=>String(d[k]||"").trim();
+ const x={id:s("email").toLowerCase(),firstName:s("firstName"),lastName:s("lastName"),fatherName:s("fatherName"),motherName:s("motherName"),village:s("village"),phone:s("phone"),email:s("email").toLowerCase(),bkash:s("bkash"),status:"pending",createdAt:ts()};
+ try{await setDoc(D("applications/"+x.id),x)}catch(e){throw new Error("DUP")}return{ok:true}};
+H.reviewApplication=async d=>{staff();const a=(await rows0("applications")).find(x=>x.id===d.id);need(a&&a.status==="pending","Not pending");const b=writeBatch(db);
+ if(d.action==="reject"){b.update(D("applications/"+d.id),{status:"rejected",reviewedBy:uid()});aud(b,"APPLICATION_REJECTED",d.id,"pending","rejected")}
+ else{const p=doc(collection(db,"proposals")),t="New member application: "+a.firstName+" "+a.lastName+" ("+d.id.slice(0,6)+")";
+  b.set(p,{id:p.id,kind:"member",title:t,applicationId:d.id,createdBy:me().memberId,createdAt:ts()});b.update(D("applications/"+d.id),{status:"voting",proposalId:p.id});notice(b,"নতুন সদস্য আবেদন / New member application",t);aud(b,"APPLICATION_TO_VOTE",d.id,"pending","voting")}
+ await b.commit();return{ok:true}};
+// সদস্য তৈরি: আলাদা (aux) Firebase app দিয়ে Auth account, যাতে Admin-এর login বহাল থাকে
+H.createMember=async d=>{adm();let nameEn,nameBn,email,role=["member","treasurer"].includes(d.role)?d.role:"member",app=null;
+ if(d.applicationId){app=(await SA.rows("applications")).find(a=>a.id===d.applicationId);need(app&&app.status==="approved","Application is not approved by vote");nameEn=nameBn=app.firstName+" "+app.lastName;email=app.email;role="member"}
+ else{const act=(await rows0("members")).filter(m=>m.status==="active").length;need(act<6,"Six founders reached — new members must come through application and vote");
+  nameEn=String(d.nameEn||"").trim();nameBn=String(d.nameBn||"").trim()||nameEn;email=String(d.email||"").trim().toLowerCase();need(nameEn.length>=2,"Bad name");need(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email),"Bad email")}
+ const raw=crypto.getRandomValues(new Uint8Array(9)),temp=btoa(String.fromCharCode(...raw)).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
+ const aux=initializeApp(cfg,"aux"+Date.now()),a2=getAuth(aux);let nu;
+ try{nu=(await createUserWithEmailAndPassword(a2,email,temp)).user.uid}catch(e){await deleteApp(aux);throw new Error(e.code==="auth/email-already-in-use"?"An account already exists for this email":"Could not create account: "+(e.code||e.message))}
+ await signOut(a2).catch(()=>{});await deleteApp(aux);
+ const ms=await rows0("members"),cn=await gd("counters/members"),next=cn.exists()?cn.data().next:ms.reduce((m,x)=>Math.max(m,parseInt(x.id.split("-")[1],10)||0),0)+1,id="SA-"+String(next).padStart(3,"0"),b=writeBatch(db);
+ b.set(D("users/"+nu),{uid:nu,memberId:id,email,role,status:"active",language:"bn",createdAt:ts()});
+ b.set(D("members/"+id),{memberId:id,nameBn,nameEn,joiningDate:new Date().toISOString().slice(0,10),memberType:app?"member":"founder",status:"active"});
+ b.set(D("counters/members"),{next:next+1});
+ if(app){b.set(D("members/"+id+"/private/application"),{fatherName:app.fatherName,motherName:app.motherName,village:app.village,phone:app.phone,bkash:app.bkash,email});b.set(D("members/"+id+"/private/profile"),{phone:app.phone});b.update(D("applications/"+app.id),{status:"member",memberId:id})}
+ aud(b,"MEMBER_CREATED",id,"",role);await b.commit();return{memberId:id,email,tempPassword:temp,count:ms.filter(m=>m.status==="active").length+1}};
+SA.call=async(n,d)=>{if(!H[n])throw new Error("Unknown action");try{return await H[n](d||{})}catch(e){throw new Error(e.code==="permission-denied"?"Not allowed (Firestore rules)":e.message)}};
+// ===== লগইন / প্রোফাইল =====
+async function load(u){const us=await getDoc(D("users/"+u.uid)).catch(()=>null);
+ if(!us||!us.exists()||us.data().status!=="active"){await signOut(auth);throw new Error("inactive")}
+ const x=us.data(),m=await gd("members/"+x.memberId),d=m.exists()?m.data():{};
+ SA.user={uid:u.uid,role:x.role,memberId:x.memberId,staff:x.role==="admin"||x.role==="treasurer",nameBn:d.nameBn||"",nameEn:d.nameEn||"",get name(){return L=="bn"?this.nameBn:this.nameEn}};return SA.user}
 SA.login=async(e,p)=>load((await signInWithEmailAndPassword(auth,e,p)).user);
 SA.reset=e=>sendPasswordResetEmail(auth,e).catch(()=>{});
 SA.out=()=>signOut(auth);
-SA.load=async()=>{const s=await getDoc(doc(db,"members",SA.user.memberId,"private","profile"));return s.exists()?s.data().phone:""};
-SA.save=ph=>setDoc(doc(db,"members",SA.user.memberId,"private","profile"),{phone:ph});
-SA.rows=(c,w)=>getDocs(w?query(collection(db,c),where(w[0],w[1],w[2])):collection(db,c)).then(s=>s.docs.map(d=>({id:d.id,...d.data()})));
-SA.doc=p=>getDoc(doc(db,p)).then(s=>s.exists()?s.data():null);
-SA.upload=async f=>{const p="receipts/"+Date.now()+"-"+f.name.replace(/[^A-Za-z0-9._-]/g,"_");await uploadBytes(ref(getStorage(app),p),f);return p};
-SA.url=p=>getDownloadURL(ref(getStorage(app),p));
-SA.call=(n,d)=>httpsCallable(fn,n)(d||{}).then(r=>r.data);
+SA.load=async()=>{const s=await gd("members/"+me().memberId+"/private/profile");return s.exists()?s.data().phone:""};
+SA.save=ph=>setDoc(D("members/"+me().memberId+"/private/profile"),{phone:ph});
+// ===== Lite-এর জন্য দুটো স্ক্রিন (Functions-এর summary doc নেই) =====
+A.portalorg=async function(){const r=await Promise.all([SA.doc("commonFund/main"),SA.rows("members")]),f=r[0]||{};
+ return '<h2>'+t(["সংগঠনের আর্থিক সারাংশ","Organization financial summary"])+'</h2><div class="grid">'+card(tk(f.currentBalance),["যৌথ তহবিল","Common fund"])+card(tk(f.totalIncome),["যৌথ আয়","Common income"])+card(tk(f.totalExpense),["মোট খরচ","Total expenses"])+card(tk((f.totalLoanOut||0)-(f.totalRepaid||0)),["বকেয়া ঋণ","Loans outstanding"])+card(tk(f.totalDonation),["অনুদান","Donations"])+'</div><h2>'+t(["সদস্যবৃন্দ","Members"])+'</h2>'+tbl(["ID",["নাম","Name"]],r[1].filter(function(m){return m.status=="active"}).sort(function(a,b){return a.memberId<b.memberId?-1:1}).map(function(m){return [m.memberId,esc(L=="bn"?m.nameBn:m.nameEn)]}))};
+A.adminln=async function(){const r=await Promise.all([SA.rows("loans"),SA.rows("donations"),SA.rows("proposals")]),have={};r[0].concat(r[1]).forEach(function(x){have[x.proposalId]=1});
+ const TY=function(ty){return ty=="loan"?["ঋণ","Loan"]:["অনুদান","Donation"]};
+ const pend=r[2].filter(function(p){return p.kind=="support"&&p.status=="approved"&&!have[p.id]}).map(function(p){return [p.subjectMemberId,TY(p.supportType),tk(p.amount),PS.approved,"—",'<button class="btn s dsb" data-ty="'+p.supportType+'" data-id="'+esc(p.id)+'">'+t(["বিতরণ","Disburse"])+'</button>']});
+ const done=sup(r[0].concat(r[1])).map(function(x){return [x.memberId,TY(x.type),tk(x.amount),PS[x.status]||x.status,x.type=="loan"?tk(x.outstanding):"—",x.type=="loan"&&x.status=="disbursed"?'<button class="btn s rpy" data-id="'+esc(x.id)+'">'+t(["ফেরত","Repay"])+'</button>':""]});
+ return '<h2>'+t(["সহায়তা (ঋণ / অনুদান)","Support (loans / donations)"])+'</h2>'+tbl([["সদস্য","Member"],["ধরন","Type"],["পরিমাণ","Amount"],["অবস্থা","Status"],["বাকি","Outstanding"],""],pend.concat(done))};
 onAuthStateChanged(auth,async u=>{
  try{if(u)await load(u);else SA.user=null}catch(e){SA.user=null}
  SA.ready=true;rv("portal");rv("admin");route()});
