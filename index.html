@@ -318,6 +318,15 @@ A.portalorg=async function(){var r=await Promise.all([SA.doc("publicSummary/main
  return '<h2>'+t(["সংগঠনের আর্থিক সারাংশ","Organization financial summary"])+'</h2><div class="grid">'+card(tk(x.totalDeposited),["মোট জমা","Total deposited"])+card(tk(x.personalTotal),["ব্যক্তিগত হিসাব (সম্মিলিত)","Personal accounts (combined)"])+card(tk(x.commonFund),["যৌথ তহবিল","Common fund"])+card(tk(x.totalExpense),["মোট খরচ","Total expenses"])+card(tk(x.loansOutstanding),["বকেয়া ঋণ","Loans outstanding"])+'</div><h2>'+t(["সদস্যবৃন্দ","Members"])+'</h2>'+tbl(["ID",["নাম","Name"]],r[1].filter(function(m){return m.status=="active"}).sort(function(a,b){return a.memberId<b.memberId?-1:1}).map(function(m){return [m.memberId,esc(L=="bn"?m.nameBn:m.nameEn)]}))};
 B.portalorg=function(){return '<h2>'+t(["সংগঠনের আর্থিক সারাংশ","Organization financial summary"])+'</h2><div class="grid">'+card("৳৩,৬০০",["মোট জমা","Total deposited"])+card("৳৭২০",["যৌথ তহবিল","Common fund"])+'</div>'};
 
+var EJ={service:"service_5era5xp",template:"template_s9lnv1h",key:"OnBn5sf6Q1BRArA7A8Fef"};
+var BMON=["জানুয়ারি","ফেব্রুয়ারি","মার্চ","এপ্রিল","মে","জুন","জুলাই","আগস্ট","সেপ্টেম্বর","অক্টোবর","নভেম্বর","ডিসেম্বর"];
+function dd(x){return x&&x.toDate?x.toDate().toLocaleDateString("en-CA",{timeZone:"Asia/Dhaka"}):""}
+function mailReceipt(type,pid){if(EJ.template.indexOf("YOUR")==0||EJ.key.indexOf("YOUR")==0)return;
+ var col=type=="monthly"?"contributions":"joiningFees";
+ SA.doc(col+"/"+pid).then(function(p){if(!p)throw 0;return Promise.all([SA.doc("members/"+p.memberId),SA.rows("users",["memberId","==",p.memberId])]).then(function(r){
+  var m=r[0]||{},u=r[1][0];if(!u||!u.email)throw 0;
+  var lab=type=="monthly"?BMON[+p.month.slice(5)-1]+" "+nb(p.month.slice(0,4)):"ভর্তি ফি (Joining fee)";
+  return fetch("https://api.emailjs.com/api/v1.0/email/send",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({service_id:EJ.service,template_id:EJ.template,user_id:EJ.key,template_params:{to_email:u.email,to_name:m.nameBn||m.nameEn||p.memberId,member_id:p.memberId,month:lab,submitted_on:dd(p.createdAt),received_on:dd({toDate:function(){return new Date()}})}})}).then(function(res){if(!res.ok)throw 0})})}).catch(function(){alert(t(["জমা যাচাই হয়েছে, কিন্তু ইমেইল পাঠানো যায়নি।","Payment verified, but the email could not be sent."]))})}
 function rv(id){var v=V[id];$("#v-"+id).innerHTML='<div class="tabs">'+v.tabs.map(function(x){return '<button class="btn s'+(x[0]==v.cur?'':' o')+'" style="'+(x[0]==v.cur?'':'color:var(--ac)')+'" data-t="'+x[0]+'">'+t(x[1])+'</button>'}).join('')+(SA.mode=="firebase"&&SA.user&&SA.user.staff?'<button class="btn o s sw" data-to="'+(id=="admin"?"portal":"admin")+'" style="color:var(--ac)">⇄ '+(id=="admin"?"Portal":"Admin")+'</button>':"")+'<span style="flex:1"></span><button class="btn o s lo" style="color:var(--ac)">'+t(["লগআউট","Logout"])+'</button></div>'+(AK(id+v.cur)?'<div id="ab">…</div>':B[id+v.cur]())+(SA.mode=="firebase"?"":'<div class="note" style="margin-top:14px">'+D[L].demo+'</div>');if(AK(id+v.cur))A[id+v.cur]().then(function(h){var e=$("#ab");if(e)e.innerHTML=h}).catch(function(x){var e=$("#ab");if(e)e.textContent=x.message});if(id=="portal"&&v.cur=="pro"&&SA.load)SA.load().then(function(x){var i=$("#pph");if(i)i.value=x||""})}
 document.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;var vw=b.closest(".view"),id=vw&&vw.id.slice(2),c=b.classList,v=function(x){return $("#"+x).value.trim()},n=function(x){return parseInt($("#"+x).value,10)||0};
 function done(p){p.then(function(){rv(id)}).catch(function(x){alert(x.message)})}
@@ -329,7 +338,7 @@ else if(c.contains("sw"))location.hash=b.dataset.to;
 else if(c.contains("vb"))b.outerHTML="✓";
 else if(c.contains("sv")){SA.save&&SA.save($("#pph").value.trim()).then(function(){$("#pmsg").textContent="✓"}).catch(function(){$("#pmsg").textContent="✗"})}
 else if(c.contains("sp"))done(call("submitPayment",{type:$("#pty").value,month:$("#pmo").value,reference:$("#prf").value}));
-else if(c.contains("ver")||c.contains("rej"))done(call(c.contains("ver")?"verifyPayment":"rejectPayment",{type:b.dataset.ty,paymentId:b.dataset.id}));
+else if(c.contains("ver")||c.contains("rej")){var isv=c.contains("ver"),ty=b.dataset.ty,pid=b.dataset.id;done(call(isv?"verifyPayment":"rejectPayment",{type:ty,paymentId:pid}).then(function(){if(isv)mailReceipt(ty,pid)}))}
 else if(c.contains("rvs")){var r=prompt(t(["কারণ লিখুন","Enter reason"]));if(r)done(call("reversePayment",{transactionId:b.dataset.id,reason:r}))}
 else if(c.contains("rec"))call("reconcile").then(function(r){$("#rmsg").textContent=r.ok?"✓ OK ("+r.checked+")":"✗ "+JSON.stringify(r.mismatches)});
 else if(c.contains("cv"))done(call("castVote",{proposalId:b.dataset.id,vote:b.dataset.v}));
