@@ -38,7 +38,8 @@ input,textarea,select{width:100%;padding:10px;border:1px solid var(--bd);border-
 label{font-size:14px;color:var(--mu)}.narrow{max-width:400px;margin:20px auto}
 .note{background:rgba(200,147,43,.15);border-left:4px solid var(--ac2);padding:10px 12px;border-radius:8px;font-size:14px}
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}.pill{color:var(--ac);font-weight:600}
-@media print{header,.tabs,.btn,footer,select,label{display:none!important}body{background:#fff;color:#000}body::before{display:none}.card{border:0}}
+.rph{display:none}
+@media print{.rph{display:block!important}header,.tabs,.btn,footer,select,label{display:none!important}body{background:#fff;color:#000}body::before{display:none}.card{border:0}}
 footer{text-align:center;color:var(--mu);font-size:13px;padding:20px}
 ul.cl li{margin:6px 0}
 </style>
@@ -255,10 +256,13 @@ function grp(r){var g={};r.forEach(function(x){var m=dt(x.createdAt).slice(0,7),
  return Object.keys(g).sort().map(function(k){var o=g[k];return [o.m,o.per,o.inc,o.exp,o.out,o.rep]})}
 var M$=[tk,tk,tk,tk,tk];
 Object.assign(A,{
-portalrp:async function(){var m=SA.user.memberId,all=await SA.rows("transactions",["memberId","==",m]),r=asc(all.filter(fy)),bal=0;
+portalrp:async function(){var m=SA.user.memberId,u=SA.user,q=await Promise.all([SA.rows("transactions",["memberId","==",m]),SA.doc("personalAccounts/"+m),SA.load?SA.load().catch(function(){return ""}):""]),all=q[0],pa=q[1]||{},ph=q[2]||"",r=asc(all.filter(fy)),bal=0;
+ var row=function(l,v){return '<div style="display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid var(--bd)"><span style="color:var(--mu)">'+t(l)+'</span><b style="text-align:right;word-break:break-all">'+v+'</b></div>'};
+ var hd='<div class="rph"><div style="text-align:center;margin:4px 0 14px"><div style="font-size:28px;font-weight:700;letter-spacing:1px;color:var(--ac)">SIXFOLD ALLIANCE</div><div style="color:var(--mu);font-size:.9rem">Six Friends. One Bond.</div></div><div class="card" style="margin:0 0 16px">'+row(["সদস্যের নাম","Member name"],esc(u.name||"—"))+row(["সদস্য আইডি","Member ID"],esc(u.memberId||"—"))+row(["ফোন নম্বর","Phone number"],esc(ph||"—"))+row(["ইমেইল","Email"],esc(u.email||"—"))+row(["ব্যক্তিগত অ্যাকাউন্ট ব্যালেন্স","Personal account balance"],tk(pa.currentBalance||0))+'</div></div>';
  var st=r.map(function(x){bal+=x.personalShare;return [dt(x.createdAt),[TL[x.type]?TL[x.type][0]:x.type,TL[x.type]?TL[x.type][1]:x.type],x.amount,x.personalShare,x.commonShare,bal]});
- var mo=grp(r).map(function(x){return [x[0],x[1],x[2]]});
- return '<h2>'+t(["আমার রিপোর্ট","My statement"])+'</h2>'+ysel(all)+'<h3>'+t(["মাসওয়ারি","By month"])+'</h3>'+rtbl("my-monthly",[["মাস","Month"],["ব্যক্তিগত","Personal"],["যৌথ","Common"]],mo,[null,tk,tk])+'<h3>'+t(["স্টেটমেন্ট","Statement"])+'</h3>'+rtbl("my-statement",[["তারিখ","Date"],["ধরন","Type"],["পরিমাণ","Amount"],["ব্যক্তিগত","Personal"],["যৌথ","Common"],["ব্যালেন্স","Balance"]],st,[null,null,tk,tk,tk,tk])},
+ var out=hd+'<h2>'+t(["আমার রিপোর্ট","My statement"])+'</h2>'+ysel(all)+'<h3>'+t(["স্টেটমেন্ট","Statement"])+'</h3>'+rtbl("my-statement",[["তারিখ","Date"],["ধরন","Type"],["পরিমাণ","Amount"],["ব্যক্তিগত","Personal"],["যৌথ","Common"],["ব্যালেন্স","Balance"]],st,[null,null,tk,tk,tk,tk]);
+ var hr=[["SIXFOLD ALLIANCE"],["Six Friends. One Bond."],[t(["সদস্যের নাম","Member name"]),u.name||""],[t(["সদস্য আইডি","Member ID"]),u.memberId||""],[t(["ফোন নম্বর","Phone number"]),ph||""],[t(["ইমেইল","Email"]),u.email||""],[t(["ব্যক্তিগত অ্যাকাউন্ট ব্যালেন্স","Personal account balance"]),pa.currentBalance||0],[]];
+ RP["my-statement"]=hr.concat(RP["my-statement"]);return out},
 adminrp:async function(){var r=await Promise.all([SA.rows("transactions"),SA.doc("commonFund/main"),SA.rows("personalAccounts"),SA.rows("loans"),SA.rows("donations")]);
  var all=r[0],tx=asc(all.filter(fy)),fund=r[1]||{},S=function(f,g){return tx.filter(f).reduce(function(a,x){return a+g(x)},0)};
  var led=all.reduce(function(a,x){return a+x.commonShare},0),ok=led==(fund.currentBalance||0);
@@ -484,7 +488,7 @@ SA.call=async(n,d)=>{if(!H[n])throw new Error("Unknown action");try{return await
 async function load(u){const us=await getDoc(D("users/"+u.uid)).catch(()=>null);
  if(!us||!us.exists()||us.data().status!=="active"){await signOut(auth);throw new Error("inactive")}
  const x=us.data(),m=await gd("members/"+x.memberId),d=m.exists()?m.data():{};
- SA.user={uid:u.uid,role:x.role,memberId:x.memberId,staff:x.role==="admin"||x.role==="treasurer",nameBn:d.nameBn||"",nameEn:d.nameEn||"",get name(){return L=="bn"?this.nameBn:this.nameEn}};return SA.user}
+ SA.user={uid:u.uid,email:x.email||u.email||"",role:x.role,memberId:x.memberId,staff:x.role==="admin"||x.role==="treasurer",nameBn:d.nameBn||"",nameEn:d.nameEn||"",get name(){return L=="bn"?this.nameBn:this.nameEn}};return SA.user}
 SA.login=async(e,p)=>load((await signInWithEmailAndPassword(auth,e,p)).user);
 SA.reset=e=>sendPasswordResetEmail(auth,e).catch(()=>{});
 SA.out=()=>signOut(auth);
