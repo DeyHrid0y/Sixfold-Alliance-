@@ -343,7 +343,7 @@ A.portalorg=async function(){var r=await Promise.all([SA.doc("publicSummary/main
  return '<h2>'+t(["সংগঠনের আর্থিক সারাংশ","Organization financial summary"])+'</h2><div class="grid">'+card(tk(x.totalDeposited),["মোট জমা","Total deposited"])+card(tk(x.personalTotal),["ব্যক্তিগত হিসাব (সম্মিলিত)","Personal accounts (combined)"])+card(tk(x.commonFund),["যৌথ তহবিল","Common fund"])+card(tk(x.totalExpense),["মোট খরচ","Total expenses"])+card(tk(x.loansOutstanding),["বকেয়া ঋণ","Loans outstanding"])+'</div><h2>'+t(["সদস্যবৃন্দ","Members"])+'</h2>'+tbl(["ID",["নাম","Name"]],r[1].filter(function(m){return m.status=="active"}).sort(function(a,b){return a.memberId<b.memberId?-1:1}).map(function(m){return [m.memberId,esc(L=="bn"?m.nameBn:m.nameEn)]}))};
 
 
-var EJ={service:"service_5era5xp",template:"template_s9lnv1h",key:"tYewrTJYoLBkzESJV",reminder:""}; /* reminder = চাঁদা-স্মরণের EmailJS template ID (নিচে নির্দেশনা) */
+var EJ={service:"service_5era5xp",template:"template_s9lnv1h",key:"tYewrTJYoLBkzESJV",reminder:"template_v8kfpea"}; /* reminder = চাঁদা-স্মরণের EmailJS template ID (নিচে নির্দেশনা) */
 var BMON=["জানুয়ারি","ফেব্রুয়ারি","মার্চ","এপ্রিল","মে","জুন","জুলাই","আগস্ট","সেপ্টেম্বর","অক্টোবর","নভেম্বর","ডিসেম্বর"];
 function dd(x){return x&&x.toDate?x.toDate().toLocaleDateString("en-CA",{timeZone:"Asia/Dhaka"}):""}
 function mailReceipt(type,pid,manual){if(EJ.template.indexOf("YOUR")==0||EJ.key.indexOf("YOUR")==0)return;
