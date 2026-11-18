@@ -2,6 +2,11 @@
 <html lang="bn">
 <head>
 <meta charset="utf-8">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0f3d33">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Sixfold">
+<link rel="apple-touch-icon" href="icon-192.png">
 <meta name="google-site-verification" content="dC2_FZx4y_-_buFAYg25buBW85ZzeTXtnnDAwWl8jv0" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sixfold Alliance</title>
@@ -166,7 +171,7 @@ var SA={mode:"off",ready:true,user:null},L="bn",$=function(s){return document.qu
 
 function tr(){var d=D[L];document.documentElement.lang=L;
 document.querySelectorAll("[data-i]").forEach(function(e){e.textContent=d[e.dataset.i]});
-$("#lang").textContent=L=="bn"?"EN":"বাংলা";rv("portal");rv("admin")}
+$("#lang").textContent=L=="bn"?"EN":"বাংলা";rv("portal");rv("admin");if(window.applyPages)applyPages()}
 function route(){$("#nav").classList.remove("open");var h=(location.hash||"#home").slice(1);if(!$("#v-"+h))h="home";
 if(h=="portal"||h=="admin"){if(!SA.ready)return;if(!SA.user)h="login";else if(h=="admin"&&!SA.user.staff)h="portal";else if(h=="portal"&&SA.user.memberId=="ADMIN")h="admin"}
 document.querySelectorAll(".view").forEach(function(v){v.classList.toggle("on",v.id=="v-"+h)});
@@ -180,7 +185,7 @@ function tbl(h,r){return '<div class="card wrap">'+(r.length>5?'<input class="ts
 var H={date:["তারিখ","Date"],type:["ধরন","Type"],amt:["পরিমাণ","Amount"],st:["অবস্থা","Status"],mon:["মাস","Month"],mem:["সদস্য","Member"],ok:["যাচাইকৃত","Verified"]};
 var JF=["ভর্তি ফি","Joining fee"],MC=["মাসিক চাঁদা","Monthly contribution"];
 var V={portal:{cur:"dash",tabs:[["dash",["ড্যাশবোর্ড","Dashboard"]],["pro",["প্রোফাইল","Profile"]],["con",["চাঁদা","Contributions"]],["tx",["লেনদেন","Transactions"]],["org",["সংগঠন","Organization"]],["rp",["রিপোর্ট","Reports"]],["vote",["ভোট","Votes"]],["loan",["সহায়তা","Support"]],["meet",["সভা","Meetings"]],["nt",["নোটিফিকেশন","Notices"]]]},
-admin:{cur:"ov",tabs:[["ov",["ওভারভিউ","Overview"]],["pay",["পেমেন্ট","Payments"]],["led",["লেজার","Ledger"]],["rp",["রিপোর্ট","Reports"]],["mem",["সদস্য","Members"]],["exp",["খরচ","Expenses"]],["ln",["সহায়তা","Support"]],["mt",["সভা","Meetings"]],["ap",["আবেদন","Applications"]],["au",["অডিট লগ","Audit log"]]]}};
+admin:{cur:"ov",tabs:[["ov",["ওভারভিউ","Overview"]],["pay",["পেমেন্ট","Payments"]],["led",["লেজার","Ledger"]],["rp",["রিপোর্ট","Reports"]],["mem",["সদস্য","Members"]],["exp",["খরচ","Expenses"]],["ln",["সহায়তা","Support"]],["mt",["সভা","Meetings"]],["ap",["আবেদন","Applications"]],["pg",["পাতা","Pages"]],["au",["অডিট লগ","Audit log"]]]}};
 function nb(n){return String(n).replace(/[0-9]/g,function(d){return "০১২৩৪৫৬৭৮৯"[d]})}
 function tk(n){return (n<0?"-":"")+"৳"+nb(Math.abs(n||0))}
 function dt(x){return x&&x.toDate?x.toDate().toISOString().slice(0,10):"—"}
@@ -200,19 +205,19 @@ portalcon:async function(){var m=SA.user.memberId,r=await Promise.all([SA.rows("
  var rows=r[0].map(function(x){return [x.month,["মাসিক চাঁদা","Monthly"],tk(x.amount),ST[x.status]||x.status]}).concat(r[1].map(function(x){return ["—",["ভর্তি ফি","Joining fee"],tk(x.amount),ST[x.status]||x.status]}));
  return '<h2>'+t(["জমা","Payments"])+'</h2>'+tbl([["মাস","Month"],["ধরন","Type"],["পরিমাণ","Amount"],["অবস্থা","Status"]],rows)+'<div class="card narrow" style="margin:14px 0 0"><p class="mu">'+t(["টাকা আগে bKash/নগদ/হাতে দিয়ে তারপর এখানে তথ্য দাও। Admin যাচাই করলে ব্যালেন্সে যোগ হবে।","Pay first (bKash/cash), then submit details. Your balance updates after an admin verifies."])+'</p><label>'+t(["ধরন","Type"])+'</label><select id="pty"><option value="monthly">'+t(["মাসিক চাঁদা ৳১০০","Monthly ৳100"])+'</option><option value="joining">'+t(["ভর্তি ফি ৳৫০০","Joining fee ৳500"])+'</option></select><label>'+t(["মাস","Month"])+'</label><input id="pmo" type="month" value="'+new Date().toISOString().slice(0,7)+'"><label>'+t(["পেমেন্ট রেফারেন্স (TrxID)","Payment reference (TrxID)"])+'</label><input id="prf" maxlength="30"><button class="btn sp">'+t(["জমার তথ্য পাঠান","Submit"])+'</button></div>'},
 portaltx:async function(){return '<h2>'+t(["লেনদেন","Transactions"])+'</h2>'+txT(await SA.rows("transactions",["memberId","==",SA.user.memberId]),"my-tx")},
-adminpay:async function(){var r=await pend();
+adminpayList:async function(){var r=await pend();
  var rows=r[0].map(function(x){return [x.memberId,["মাসিক","Monthly"],x.month,tk(x.amount),esc(x.reference),btns("monthly",x.id)]}).concat(r[1].map(function(x){return [x.memberId,["ভর্তি ফি","Joining"],"—",tk(x.amount),esc(x.reference),btns("joining",x.id)]}));
  return tbl([["সদস্য","Member"],["ধরন","Type"],["মাস","Month"],["পরিমাণ","Amount"],["রেফারেন্স","Reference"],""],rows)},
 adminov:async function(){var r=await Promise.all([SA.rows("personalAccounts"),SA.doc("commonFund/main"),SA.rows("members"),pend()]);
  var pers=r[0].reduce(function(a,x){return a+(x.currentBalance||0)},0),com=(r[1]||{}).currentBalance||0;
- return '<h2>ADMIN PANEL</h2><div class="grid">'+card(nb(r[2].length),["সদস্য","Members"])+card(tk(pers+com),["মোট জমা","Total deposited"])+card(tk(com),["যৌথ তহবিল","Common fund"])+card(nb(r[3][0].length+r[3][1].length),["অপেক্ষমাণ","Pending"])+'</div><h2>'+t(["যাচাইয়ের অপেক্ষায়","Pending verification"])+'</h2>'+await A.adminpay()},
+ return '<h2>ADMIN PANEL</h2><div class="grid">'+card(nb(r[2].length),["সদস্য","Members"])+card(tk(pers+com),["মোট জমা","Total deposited"])+card(tk(com),["যৌথ তহবিল","Common fund"])+card(nb(r[3][0].length+r[3][1].length),["অপেক্ষমাণ","Pending"])+'</div><h2>'+t(["যাচাইয়ের অপেক্ষায়","Pending verification"])+'</h2>'+await A.adminpayList()},
 adminled:async function(){var rows=srt(await SA.rows("transactions")),rev={},ad=SA.user.role=="admin";rows.forEach(function(x){if(x.reverses)rev[x.reverses]=1});
  return '<h2>'+t(["লেজার","Ledger"])+'</h2>'+xb("ledger",[["তারিখ","Date"],["সদস্য","Member"],["ধরন","Type"],["পরিমাণ","Amount"],["ব্যক্তিগত","Personal"],["যৌথ","Common"]],rows.map(function(x){return [dt(x.createdAt),x.memberId,(TL[x.type]||[x.type,x.type])[1],x.amount,x.personalShare,x.commonShare]}))+tbl([["তারিখ","Date"],["সদস্য","Member"],["ধরন","Type"],["পরিমাণ","Amount"],["৮০ / ২০","80 / 20"],""],rows.map(function(x){return [dt(x.createdAt),x.memberId,TL[x.type]||x.type,tk(x.amount),x.personalShare+" / "+x.commonShare,((x.type=="contribution"||x.type=="joiningFee")?'<button class="btn o s mrs" style="color:var(--ac)" data-ty="'+esc(x.paymentType)+'" data-id="'+esc(x.paymentId)+'">✉</button> ':"")+(rev[x.id]?"↩ ✓":(ad&&(x.type=="contribution"||x.type=="joiningFee")?'<button class="btn o s rvs" style="color:var(--ac)" data-id="'+esc(x.id)+'">↩</button>':""))]}))+'<p><button class="btn s rec">'+t(["হিসাব মিলিয়ে দেখুন","Reconcile"])+'</button> <span class="pill" id="rmsg"></span></p>'}
 };
 
 
-var B={portalpro:function(){var u=SA.user||{},f=SA.mode=="firebase"?"":" disabled";return '<h2>'+t(["আমার প্রোফাইল","My profile"])+'</h2><div class="card narrow" style="margin:0"><label>'+t(["নাম","Name"])+'</label><input disabled value="'+esc(u.name||"")+'"><label>ID</label><input disabled value="'+esc(u.memberId||"")+'"><label>'+t(["ফোন","Phone"])+'</label><input id="pph" maxlength="20"'+f+'><button class="btn sv"'+f+'>'+t(["সংরক্ষণ","Save"])+'</button> <span class="pill" id="pmsg"></span></div>'+(SA.mode=="firebase"?'<div class="card narrow" style="margin:14px 0 0"><b>'+t(["পাসওয়ার্ড বদলান","Change password"])+'</b><label>'+t(["বর্তমান পাসওয়ার্ড","Current password"])+'</label><input id="cp0" type="password" autocomplete="current-password"><label>'+t(["নতুন পাসওয়ার্ড (কমপক্ষে ৮ অক্ষর)","New password (min 8 characters)"])+'</label><input id="cp1" type="password" autocomplete="new-password"><label>'+t(["নতুন পাসওয়ার্ড আবার","Repeat new password"])+'</label><input id="cp2" type="password" autocomplete="new-password"><button class="btn cpw">'+t(["পাসওয়ার্ড বদলান","Change password"])+'</button> <span class="pill" id="cpmsg"></span></div>':"")}};
-var TL2={expense:["খরচ","Expense"],loanDisbursement:["ঋণ বিতরণ","Loan disbursed"],donation:["অনুদান","Donation"],loanRepayment:["ঋণ ফেরত","Loan repayment"],expenseReversal:["খরচ বাতিল (Reversal)","Expense reversal"]};
+var B={portalpro:function(){var u=SA.user||{},f=SA.mode=="firebase"?"":" disabled";return '<h2>'+t(["আমার প্রোফাইল","My profile"])+'</h2><div class="card narrow" style="margin:0"><label>'+t(["নাম","Name"])+'</label><input disabled value="'+esc(u.name||"")+'"><label>ID</label><input disabled value="'+esc(u.memberId||"")+'"><label>'+t(["ফোন","Phone"])+'</label><input id="pph" maxlength="20"'+f+'><button class="btn sv"'+f+'>'+t(["সংরক্ষণ","Save"])+'</button> <span class="pill" id="pmsg"></span></div>'+(SA.mode=="firebase"?'<div class="card narrow" style="margin:14px 0 0"><b>'+t(["পাসওয়ার্ড বদলান","Change password"])+'</b><label>'+t(["বর্তমান পাসওয়ার্ড","Current password"])+'</label><input id="cp0" type="password" autocomplete="current-password"><label>'+t(["নতুন পাসওয়ার্ড (কমপক্ষে ৮ অক্ষর)","New password (min 8 characters)"])+'</label><input id="cp1" type="password" autocomplete="new-password"><label>'+t(["নতুন পাসওয়ার্ড আবার","Repeat new password"])+'</label><input id="cp2" type="password" autocomplete="new-password"><button class="btn cpw">'+t(["পাসওয়ার্ড বদলান","Change password"])+'</button> <span class="pill" id="cpmsg"></span></div>':"")+'<div class="card narrow" style="margin:14px 0 0"><b>📲 '+t(["হোম স্ক্রিনে যোগ করুন","Add to home screen"])+'</b><p class="mu">'+t(["অ্যাপের মতো সরাসরি খুলতে: ব্রাউজারের মেনু (⋮ বা শেয়ার ⎙) থেকে “Add to Home screen” বেছে নিন।","To open it like an app: use the browser menu (⋮ or Share ⎙) → “Add to Home screen”."])+'</p><button class="btn pwa" id="pwab" style="'+(window.__ip?'':'display:none')+'">'+t(["ইনস্টল করুন","Install"])+'</button></div>'}};
+var TL2={expense:["খরচ","Expense"],loanDisbursement:["ঋণ বিতরণ","Loan disbursed"],donation:["অনুদান","Donation"],loanRepayment:["ঋণ ফেরত","Loan repayment"],expenseReversal:["খরচ বাতিল (Reversal)","Expense reversal"],withdrawal:["ব্যালেন্স ফেরত","Balance withdrawal"]};
 for(var k2 in TL2)TL[k2]=TL2[k2];
 var PS={open:["ভোট চলছে","Voting"],approved:["অনুমোদিত","Approved"],rejected:["বাতিল","Rejected"],disbursed:["বিতরণ হয়েছে","Disbursed"],repaid:["পরিশোধিত","Repaid"]};
 var KD={general:["সাধারণ","General"],support:["সহায়তা","Support"],member:["নতুন সদস্য","New member"],amendment:["গঠনতন্ত্র সংশোধন","Amendment"],dissolution:["বিলুপ্তি","Dissolution"]};
@@ -222,7 +227,7 @@ function sup(r){return r.sort(function(a,b){return (b.createdAt?b.createdAt.seco
 Object.assign(A,{
 portalvote:async function(){var m=SA.user.memberId,r=sup(await SA.rows("proposals"));
  var h=r.map(function(p){var mine=p.votes&&p.votes[m],blocked=p.kind=="support"&&p.subjectMemberId==m,can=p.status=="open"&&!mine&&!blocked;
- return '<div class="card" style="margin-bottom:10px"><b>'+esc(p.title)+'</b> <span class="mu">· '+t(KD[p.kind])+'</span>'+(p.purpose?'<div class="mu">৳'+nb(p.amount)+' — '+esc(p.purpose)+'</div>':'')+'<div class="pill">'+t(PS[p.status])+' · ✓ '+nb(p.yesCount||0)+' / ✗ '+nb(p.noCount||0)+'</div>'+(can?'<button class="btn s cv" data-id="'+esc(p.id)+'" data-v="yes">✓ '+t(["হ্যাঁ","Yes"])+'</button> <button class="btn o s cv" style="color:var(--ac)" data-id="'+esc(p.id)+'" data-v="no">✗ '+t(["না","No"])+'</button>':(mine?'<span class="mu">'+t(["আপনি ভোট দিয়েছেন","You voted"])+': '+mine+'</span>':(blocked&&p.status=="open"?'<span class="mu">'+t(["নিজের প্রস্তাবে ভোট নয়","Cannot vote on your own request"])+'</span>':'')))+'</div>'}).join('');
+ return '<div class="card" style="margin-bottom:10px"><b>'+esc(p.title)+'</b> <span class="mu">· '+t(KD[p.kind])+'</span>'+(p.purpose?'<div class="mu">৳'+nb(p.amount)+' — '+esc(p.purpose)+'</div>':'')+'<div class="pill">'+t(PS[p.status])+' · ✓ '+nb(p.yesCount||0)+' / ✗ '+nb(p.noCount||0)+'</div>'+(p.kind=="support"?'<div class="mu">'+t(["কোরাম: অনুমোদনের জন্য কমপক্ষে ৫ জনের ভোট লাগবে","Quorum: at least 5 votes are needed for approval"])+'</div>':'')+(can?'<button class="btn s cv" data-id="'+esc(p.id)+'" data-v="yes">✓ '+t(["হ্যাঁ","Yes"])+'</button> <button class="btn o s cv" style="color:var(--ac)" data-id="'+esc(p.id)+'" data-v="no">✗ '+t(["না","No"])+'</button>':(mine?'<span class="mu">'+t(["আপনি ভোট দিয়েছেন","You voted"])+': '+mine+'</span>':(blocked&&p.status=="open"?'<span class="mu">'+t(["নিজের প্রস্তাবে ভোট নয়","Cannot vote on your own request"])+'</span>':'')))+'</div>'}).join('');
  return '<h2>'+t(["ভোট ও প্রস্তাব","Votes & proposals"])+'</h2>'+(h||'<p class="mu">—</p>')+frm('<b>'+t(["নতুন প্রস্তাব","New proposal"])+'</b>'+inp(["ধরন","Type"],'<select id="ppk"><option value="general">'+t(KD.general)+'</option><option value="member">'+t(KD.member)+'</option><option value="amendment">'+t(KD.amendment)+'</option><option value="dissolution">'+t(KD.dissolution)+'</option></select>')+inp(["বিষয়","Title"],'<input id="ppt" maxlength="200">')+'<button class="btn cp">'+t(["পাঠান","Submit"])+'</button>')},
 portalloan:async function(){var m=SA.user.memberId,r=await Promise.all([SA.rows("loans",["memberId","==",m]),SA.rows("donations",["memberId","==",m])]);
  var rows=r[0].concat(r[1]).map(function(x){return [x.type=="loan"?["ঋণ","Loan"]:["অনুদান","Donation"],tk(x.amount),PS[x.status]||x.status,x.type=="loan"?tk(x.outstanding):"—",dueTag(x)]});
@@ -296,36 +301,49 @@ adminrp:async function(){var r=await Promise.all([SA.rows("transactions"),SA.doc
 
 
 document.addEventListener("input",function(e){var el=e.target;if(!el.classList||!el.classList.contains("tsrch"))return;var q=el.value.toLowerCase().trim(),w=el.closest(".card"),rs=w.querySelectorAll("tr");for(var i=1;i<rs.length;i++)rs[i].style.display=(!q||rs[i].textContent.toLowerCase().indexOf(q)>=0)?"":"none"});
-document.addEventListener("change",function(e){if(e.target.id=="ryr"){RY=e.target.value;var vw=e.target.closest(".view");rv(vw.id.slice(2))}});
+document.addEventListener("change",function(e){if(e.target.id=="pgsel"){PGSEL=e.target.value;rv("admin");return}if(e.target.id=="dmo"){DUEM=e.target.value||null;rv("admin");return}if(e.target.id=="ryr"){RY=e.target.value;var vw=e.target.closest(".view");rv(vw.id.slice(2))}});
 
 var AS={pending:["অপেক্ষমাণ","Pending"],voting:["ভোট চলছে","Voting"],approved:["অনুমোদিত","Approved"],rejected:["বাতিল","Rejected"],member:["সদস্য হয়েছে","Member created"]};
 A.adminap=async function(){var r=sup(await SA.rows("applications"));
  return '<h2>'+t(["সদস্য আবেদন","Membership applications"])+'</h2>'+tbl([["নাম","Name"],["পিতা","Father"],["মাতা","Mother"],["গ্রাম","Village"],["ফোন","Phone"],"Email","bKash",["অবস্থা","Status"],""],r.map(function(x){return [esc(x.firstName+" "+x.lastName),esc(x.fatherName),esc(x.motherName),esc(x.village),esc(x.phone),esc(x.email),esc(x.bkash||"—"),AS[x.status]||x.status,x.status=="pending"?'<button class="btn s apv" data-id="'+esc(x.id)+'">'+t(["ভোটে তুলুন","To vote"])+'</button> <button class="btn o s apr" style="color:var(--ac)" data-id="'+esc(x.id)+'">✗</button>':(x.status=="approved"?'<button class="btn s apm" data-id="'+esc(x.id)+'">'+t(["সদস্য বানান","Create member"])+'</button>':"")]}))};
 
 
+var DUEM=null,DUE=[],PGSEL="about";
+A.adminpay=async function(){return (await A.adminpayList())+await dueCard()};
+async function dueCard(){var mo=DUEM||today().slice(0,7),r=await Promise.all([SA.rows("members"),SA.rows("contributions"),SA.rows("users")]),paid={},em={};
+ r[1].forEach(function(x){if(x.month==mo&&(x.status=="verified"||x.status=="pending"))paid[x.memberId]=1});r[2].forEach(function(u){em[u.memberId]=u.email});
+ var due=r[0].filter(function(m){return m.status=="active"&&!paid[m.memberId]}).sort(function(a,b){return a.memberId<b.memberId?-1:1});
+ DUE=due.map(function(m){return {id:m.memberId,name:m.nameBn||m.nameEn,email:em[m.memberId]||""}});DUEM=mo;
+ var H2=["ID",["নাম","Name"],"Email"],rows=DUE.map(function(x){return [x.id,esc(x.name),esc(x.email||"—")]});
+ return '<h2>'+t(["বকেয়া চাঁদা","Unpaid dues"])+'</h2><div class="card narrow" style="margin:0 0 10px"><label>'+t(["মাস","Month"])+'</label><input type="month" id="dmo" value="'+mo+'"></div>'+(rows.length?xb("dues",H2,DUE.map(function(x){return [x.id,x.name,x.email]}))+tbl(H2,rows)+'<p><button class="btn s dnt">🔔 '+t(["অ্যাপে নোটিস পাঠান","Post notice"])+'</button> <button class="btn o s dem" style="color:var(--ac)">📧 '+t(["ইমেইল স্মরণ পাঠান","Send email reminders"])+' ('+nb(DUE.filter(function(x){return x.email}).length)+')</button> <span class="pill" id="dmsg"></span></p>':'<p class="mu">✓ '+t(["এই মাসে কারও বকেয়া নেই","No one is behind for this month"])+'</p>')}
+function remindEmail(m,mo){return fetch("https://api.emailjs.com/api/v1.0/email/send",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({service_id:EJ.service,template_id:EJ.reminder,user_id:EJ.key,template_params:{to_email:m.email,to_name:m.name,member_id:m.id,month:mo,amount:"100"}})}).then(function(res){if(!res.ok)throw new Error(res.status)})}
+var PGN={about:["আমাদের কথা","About"],activities:["কার্যক্রম","Activities"],constitution:["গঠনতন্ত্র","Constitution"],contact:["যোগাযোগ","Contact"]};
+A.adminpg=async function(){if(SA.user.role!="admin")return '<p class="mu">Admin only</p>';var d=await SA.doc("pages/"+PGSEL)||{};
+ return '<h2>'+t(["পাতার লেখা সম্পাদনা","Edit page content"])+'</h2>'+frm(inp(["পাতা","Page"],'<select id="pgsel">'+Object.keys(PGN).map(function(k){return '<option value="'+k+'"'+(k==PGSEL?' selected':'')+'>'+t(PGN[k])+'</option>'}).join("")+'</select>')+inp(["বাংলা লেখা","Bangla text"],'<textarea id="pg_bn" rows="10" style="width:100%">'+esc(d.bn||"")+'</textarea>')+inp(["English text","English text"],'<textarea id="pg_en" rows="10" style="width:100%">'+esc(d.en||"")+'</textarea>')+(PGSEL=="constitution"?inp(["PDF লিংক (ঐচ্ছিক, https://…)","PDF link (optional, https://…)"],'<input id="pg_pdf" maxlength="500" value="'+esc(d.pdf||"")+'">'):'<input id="pg_pdf" type="hidden" value="">')+'<p class="mu">'+t(["# শিরোনাম · ## উপশিরোনাম · - তালিকা · **মোটা** · ![বর্ণনা](https://ছবির-লিংক) · https:// লিংক ও ইমেইল নিজে থেকে লিংক হবে। দুটো ঘরই ফাঁকা রেখে সংরক্ষণ করলে আগের ডিফল্ট লেখা ফিরে আসবে।","# Heading · ## Subheading · - list · **bold** · ![alt](https://image-link) · https:// links and emails become links automatically. Save with both boxes empty to restore the default text."])+'</p><button class="btn pgsv">'+t(["সংরক্ষণ","Save"])+'</button>')};
 var _pd=A.portaldash,_ao=A.adminov;
 A.portaldash=async function(){var h=await _pd(),l=await SA.rows("loans",["memberId","==",SA.user.memberId]).catch(function(){return []});return dueBanner(l,false)+h};
 A.adminov=async function(){var h=await _ao(),l=await SA.rows("loans").catch(function(){return []});return dueBanner(l,true)+h};
 var NEWM=null,EDM=null;
 A.adminmem=async function(){var r=(await SA.rows("members")).sort(function(a,b){return a.memberId<b.memberId?-1:1}),nact=r.filter(function(x){return x.status=="active"}).length,box="",adm=SA.user.role=="admin";
+ var pab={};(await SA.rows("personalAccounts")).forEach(function(q){pab[q.id]=q.currentBalance||0});
  var ex=await Promise.all(r.map(function(x){return Promise.all([SA.doc("members/"+x.memberId+"/private/profile"),SA.doc("members/"+x.memberId+"/private/application")])}));
  if(NEWM){box='<div class="note" style="margin-bottom:12px"><b>'+t(["নতুন সদস্য তৈরি হয়েছে — এই তথ্য আর দেখানো হবে না, এখনই কপি করে সদস্যকে দাও","Member created — this is shown only once, copy it now"])+'</b><br>ID: '+esc(NEWM.memberId)+'<br>Email: '+esc(NEWM.email)+'<br>'+t(["অস্থায়ী পাসওয়ার্ড","Temp password"])+': <b>'+esc(NEWM.tempPassword)+'</b><br>'+t(["প্রথম login-এর পর “পাসওয়ার্ড ভুলে গেছেন?” দিয়ে নিজের পাসওয়ার্ড বসাতে বলো।","After first login, ask them to set their own password via “Forgot password?”."])+'</div>';NEWM=null}
  var nm=function(x){return L=="bn"?x.nameBn:x.nameEn};
  var rows=r.map(function(x,i){var p=ex[i][0]||{},a=ex[i][1]||{},on=x.status=="active",ac="";
-  if(adm){ac='<button class="btn o s emb" style="color:var(--ac)" data-id="'+esc(x.memberId)+'">✎ '+t(["সম্পাদনা","Edit"])+'</button>';if(x.memberId!=SA.user.memberId)ac+=' <button class="btn o s tga" style="color:var(--ac)" data-id="'+esc(x.memberId)+'" data-on="'+(on?1:0)+'">'+(on?t(["নিষ্ক্রিয় করুন","Deactivate"]):t(["সক্রিয় করুন","Activate"]))+'</button>'}
-  return [x.memberId,esc(nm(x)),esc(p.phone||"—"),esc(a.bkash||"—"),esc(a.village||"—"),on?["সক্রিয়","Active"]:["নিষ্ক্রিয়","Inactive"],ac]});
- var exp=r.map(function(x,i){var p=ex[i][0]||{},a=ex[i][1]||{};return [x.memberId,x.nameEn||"",x.nameBn||"",p.phone||"",a.bkash||"",a.village||"",x.status]});
- var H1=["ID",["নাম","Name"],["ফোন","Phone"],"bKash",["গ্রাম/ঠিকানা","Village/Address"],["অবস্থা","Status"]];
+  if(adm){ac='<button class="btn o s emb" style="color:var(--ac)" data-id="'+esc(x.memberId)+'">✎ '+t(["সম্পাদনা","Edit"])+'</button>';if(x.memberId!=SA.user.memberId)ac+=' <button class="btn o s wdr" style="color:var(--ac)" data-id="'+esc(x.memberId)+'" data-b="'+(pab[x.memberId]||0)+'">💸 '+t(["ব্যালেন্স ফেরত","Pay out"])+'</button> <button class="btn o s tga" style="color:var(--ac)" data-id="'+esc(x.memberId)+'" data-on="'+(on?1:0)+'">'+(on?t(["নিষ্ক্রিয় করুন","Deactivate"]):t(["সক্রিয় করুন","Activate"]))+'</button>'}
+  return [x.memberId,esc(nm(x)),esc(p.phone||"—"),esc(a.bkash||"—"),esc(a.village||"—"),tk(pab[x.memberId]||0),on?["সক্রিয়","Active"]:["নিষ্ক্রিয়","Inactive"],ac]});
+ var exp=r.map(function(x,i){var p=ex[i][0]||{},a=ex[i][1]||{};return [x.memberId,x.nameEn||"",x.nameBn||"",p.phone||"",a.bkash||"",a.village||"",pab[x.memberId]||0,x.status]});
+ var H1=["ID",["নাম","Name"],["ফোন","Phone"],"bKash",["গ্রাম/ঠিকানা","Village/Address"],["ব্যক্তিগত ব্যালেন্স","Personal balance"],["অবস্থা","Status"]];
  var edit="",em=EDM&&r.filter(function(x){return x.memberId==EDM})[0];
  if(em&&adm){var i2=r.indexOf(em),p2=ex[i2][0]||{},a2=ex[i2][1]||{};
   edit=frm('<b>'+t(["সদস্যের তথ্য সম্পাদনা","Edit member"])+' · '+esc(em.memberId)+'</b>'+inp(["নাম (English)","Name (English)"],'<input id="em_en" maxlength="80" value="'+esc(em.nameEn||"")+'">')+inp(["নাম (বাংলা)","Name (Bangla)"],'<input id="em_bn" maxlength="80" value="'+esc(em.nameBn||"")+'">')+inp(["ফোন (01XXXXXXXXX)","Phone (01XXXXXXXXX)"],'<input id="em_ph" maxlength="20" value="'+esc(p2.phone||"")+'">')+inp(["bKash নম্বর","bKash number"],'<input id="em_bk" maxlength="20" value="'+esc(a2.bkash||"")+'">')+inp(["গ্রাম / ঠিকানা","Village / Address"],'<input id="em_vi" maxlength="120" value="'+esc(a2.village||"")+'">')+'<button class="btn emsv" data-id="'+esc(em.memberId)+'">'+t(["সংরক্ষণ","Save"])+'</button> <button class="btn o emcn" style="color:var(--ac)">'+t(["বাতিল","Cancel"])+'</button>')}
  var form=!adm?"":nact<6?frm('<b>'+t(["প্রতিষ্ঠাতা সদস্য যোগ (সর্বোচ্চ ৬ জন)","Add founder member (max 6)"])+'</b>'+inp(["নাম (English)","Name (English)"],'<input id="nm_en" maxlength="80">')+inp(["নাম (বাংলা, ঐচ্ছিক)","Name (Bangla, optional)"],'<input id="nm_bn" maxlength="80">')+inp(["ইমেইল","Email"],'<input id="nm_em" type="email" maxlength="120">')+inp(["ভূমিকা","Role"],'<select id="nm_ro"><option value="member">Member</option><option value="treasurer">Treasurer</option></select>')+'<button class="btn am">'+t(["যোগ করুন","Add"])+'</button>'):'<p class="mu">'+t(["৬ জন পূর্ণ। নতুন সদস্য আসবে আবেদন → ভোট → অনুমোদনের পর (আবেদন ট্যাব)।","6 founders reached. New members come via application → vote → approval (Applications tab)."])+'</p>';
- return box+'<h2>'+t(["সদস্য","Members"])+'</h2>'+xb("members-list",H1.concat(["Status"]).slice(0,6),exp.map(function(e){return e.slice(0,1).concat([e[1]||e[2]],e.slice(3))}))+tbl(H1.concat([""]),rows)+edit+form};
+ return box+'<h2>'+t(["সদস্য","Members"])+'</h2>'+xb("members-list",H1,exp.map(function(e){return e.slice(0,1).concat([e[1]||e[2]],e.slice(3))}))+tbl(H1.concat([""]),rows)+edit+form};
 A.portalorg=async function(){var r=await Promise.all([SA.doc("publicSummary/main"),SA.rows("members")]),x=r[0]||{};
  return '<h2>'+t(["সংগঠনের আর্থিক সারাংশ","Organization financial summary"])+'</h2><div class="grid">'+card(tk(x.totalDeposited),["মোট জমা","Total deposited"])+card(tk(x.personalTotal),["ব্যক্তিগত হিসাব (সম্মিলিত)","Personal accounts (combined)"])+card(tk(x.commonFund),["যৌথ তহবিল","Common fund"])+card(tk(x.totalExpense),["মোট খরচ","Total expenses"])+card(tk(x.loansOutstanding),["বকেয়া ঋণ","Loans outstanding"])+'</div><h2>'+t(["সদস্যবৃন্দ","Members"])+'</h2>'+tbl(["ID",["নাম","Name"]],r[1].filter(function(m){return m.status=="active"}).sort(function(a,b){return a.memberId<b.memberId?-1:1}).map(function(m){return [m.memberId,esc(L=="bn"?m.nameBn:m.nameEn)]}))};
 
 
-var EJ={service:"service_5era5xp",template:"template_s9lnv1h",key:"tYewrTJYoLBkzESJV"};
+var EJ={service:"service_5era5xp",template:"template_s9lnv1h",key:"tYewrTJYoLBkzESJV",reminder:""}; /* reminder = চাঁদা-স্মরণের EmailJS template ID (নিচে নির্দেশনা) */
 var BMON=["জানুয়ারি","ফেব্রুয়ারি","মার্চ","এপ্রিল","মে","জুন","জুলাই","আগস্ট","সেপ্টেম্বর","অক্টোবর","নভেম্বর","ডিসেম্বর"];
 function dd(x){return x&&x.toDate?x.toDate().toLocaleDateString("en-CA",{timeZone:"Asia/Dhaka"}):""}
 function mailReceipt(type,pid,manual){if(EJ.template.indexOf("YOUR")==0||EJ.key.indexOf("YOUR")==0)return;
@@ -359,10 +377,20 @@ else if(c.contains("xe"))done(call("recordExpense",{date:v("xd"),category:v("xc"
 else if(c.contains("dsb")){var due="";if(b.dataset.ty=="loan"){due=prompt(t(["ফেরতের শেষ তারিখ (YYYY-MM-DD) — না থাকলে ফাঁকা রাখুন","Repayment due date (YYYY-MM-DD) — leave empty if none"]),"");if(due===null)return}done(call("recordDisbursement",{type:b.dataset.ty,id:b.dataset.id,due:(due||"").trim()}))}
 else if(c.contains("ldu")){var dd=prompt(t(["ফেরতের শেষ তারিখ (YYYY-MM-DD)","Repayment due date (YYYY-MM-DD)"]),b.dataset.d||"");if(dd)done(call("setLoanDue",{id:b.dataset.id,due:dd.trim()}))}
 else if(c.contains("xrv")){var xr=prompt(t(["খরচ বাতিলের কারণ লিখুন","Reason for reversing this expense"]));if(xr)done(call("reverseExpense",{id:b.dataset.id,reason:xr}))}
+else if(c.contains("wdr")){var wb=parseInt(b.dataset.b,10)||0;if(wb<=0){alert(t(["এই সদস্যের ব্যক্তিগত ব্যালেন্স ০","This member's personal balance is 0"]));return}
+ var wa=parseInt(prompt(t(["ফেরতের পরিমাণ (৳) — সর্বোচ্চ ","Pay-out amount (৳) — max "])+wb,wb),10);if(!wa)return;var wr=prompt(t(["কারণ (যেমন: সদস্যপদ ছাড়া)","Reason (e.g. leaving the group)"]));if(!wr)return;
+ done(call("withdrawBalance",{id:b.dataset.id,amount:wa,reason:wr}))}
+else if(c.contains("pgsv"))done(call("savePage",{id:PGSEL,bn:$("#pg_bn").value,en:$("#pg_en").value,pdf:($("#pg_pdf").value||"").trim()}));
+else if(c.contains("dnt")){var dm=$("#dmsg");call("sendNotice",{title:"চাঁদা স্মরণ · "+DUEM,body:DUEM+" মাসের ৳১০০ চাঁদা যাদের এখনো জমা হয়নি, অনুগ্রহ করে জমা দিন।"}).then(function(){dm.textContent="✓"}).catch(function(x){dm.textContent="✗ "+x.message})}
+else if(c.contains("dem")){var dm2=$("#dmsg"),L2=DUE.filter(function(x){return x.email});
+ if(!EJ.reminder){alert(t(["ইমেইল স্মরণের জন্য EmailJS-এ একটি নতুন template বানিয়ে তার ID কোডের EJ.reminder-এ বসাতে হবে। আপাতত “অ্যাপে নোটিস” ব্যবহার করুন।","To send email reminders, create a new EmailJS template and put its ID into EJ.reminder in the code. Use “Post notice” for now."]));return}
+ if(!L2.length||!confirm(t(["ইমেইল পাঠাবেন? ","Send emails? "])+L2.length))return;b.disabled=true;var okc=0,bad=0;
+ L2.reduce(function(pr,m){return pr.then(function(){return remindEmail(m,DUEM).then(function(){okc++},function(){bad++})})},Promise.resolve()).then(function(){b.disabled=false;dm2.textContent="✓ "+okc+(bad?" · ✗ "+bad:"")})}
 else if(c.contains("emb")){EDM=b.dataset.id;rv(id)}
 else if(c.contains("emcn")){EDM=null;rv(id)}
 else if(c.contains("emsv"))done(call("editMember",{id:b.dataset.id,nameEn:v("em_en"),nameBn:v("em_bn"),phone:v("em_ph"),bkash:v("em_bk"),village:v("em_vi")}).then(function(){EDM=null}));
 else if(c.contains("tga")){var on=b.dataset.on=="1";if(confirm(on?t(["এই সদস্যকে নিষ্ক্রিয় করবেন? সে আর লগইন করতে পারবে না।","Deactivate this member? They will no longer be able to log in."]):t(["এই সদস্যকে আবার সক্রিয় করবেন?","Reactivate this member?"])))done(call("setMemberActive",{id:b.dataset.id,active:!on}))}
+else if(c.contains("pwa")){if(window.__ip){window.__ip.prompt();window.__ip=null;b.style.display="none"}}
 else if(c.contains("cpw")){var m1=$("#cpmsg"),p0=$("#cp0").value,p1=$("#cp1").value,p2=$("#cp2").value;m1.textContent="";
  if(!p0){m1.textContent=t(["বর্তমান পাসওয়ার্ড দিন","Enter your current password"]);return}
  if(p1.length<8){m1.textContent=t(["নতুন পাসওয়ার্ড কমপক্ষে ৮ অক্ষর","New password must be at least 8 characters"]);return}
@@ -390,10 +418,27 @@ $("#apgo").onclick=function(){var g=function(x){return $("#ap_"+x).value.trim()}
  SA.call("submitApplication",p).then(function(){m.textContent=d.apOk;["fn","ln","fa","mo","vi","ph","em","bk"].forEach(function(k){$("#ap_"+k).value=""})}).catch(function(x){m.textContent=x.message=="DUP"?d.apDup:d.apErr})};
 $("#mb").onclick=function(e){e.stopPropagation();var o=$("#nav").classList.toggle("open");this.setAttribute("aria-expanded",o)};
 document.addEventListener("click",function(){$("#nav").classList.remove("open")});
+var PG={};
+function inl(x){return esc(x).replace(/(https:\/\/[^\s<]+)|([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})|\*\*([^*]+)\*\*/g,function(m,u,e,b){return u?'<a href="'+u+'" target="_blank" rel="noopener">'+u+'</a>':e?'<a href="mailto:'+e+'">'+e+'</a>':'<b>'+b+'</b>'})}
+function mdHtml(src){var o=[],ul=false;String(src||"").split(/\r?\n/).forEach(function(line){var l=line.trim(),im;
+ if(/^[-*] /.test(l)){if(!ul){o.push('<ul class="cl">');ul=true}o.push("<li>"+inl(l.slice(2))+"</li>");return}
+ if(ul){o.push("</ul>");ul=false}if(!l)return;
+ im=l.match(/^!\[([^\]]*)\]\((https:\/\/[^\s)]+)\)$/);
+ if(im)o.push('<p><img src="'+esc(im[2])+'" alt="'+esc(im[1])+'" loading="lazy" style="max-width:100%;border-radius:10px"></p>');
+ else if(/^## /.test(l))o.push("<h4>"+inl(l.slice(3))+"</h4>");else if(/^# /.test(l))o.push("<h3>"+inl(l.slice(2))+"</h3>");else o.push("<p>"+inl(l)+"</p>")});
+ if(ul)o.push("</ul>");return o.join("")}
+function applyPages(){["about","activities","constitution","contact"].forEach(function(id){var v=$("#v-"+id);if(!v)return;var o=v.querySelector(".cms");if(o)o.remove();
+ var d=PG[id],txt=d?((L=="bn"?d.bn:d.en)||d.bn||d.en||""):"",on=!!txt.trim();
+ v.querySelectorAll(":scope > .card, :scope > .grid, :scope > br").forEach(function(e){e.style.display=on?"none":""});
+ if(!on)return;var c=document.createElement("div");c.className="card cms";
+ c.innerHTML=mdHtml(txt)+(id=="constitution"?'<p>'+(d.pdf&&/^https:\/\//.test(d.pdf)?'<a class="btn" href="'+esc(d.pdf)+'" target="_blank" rel="noopener">📄 PDF</a> ':'')+'<button class="btn o s prn" style="color:var(--ac)">🖨 PDF / Print</button></p>':'');v.appendChild(c)});
+ var cl=document.querySelector('#nav a[href="#contact"]');if(cl&&PG.contact&&((PG.contact.bn||"")+(PG.contact.en||"")).trim())cl.style.display=""}
 var CONTACT={email:"",phone:"",address:""};
-(function(){var c=CONTACT;if(!c.email&&!c.phone&&!c.address){var a=document.querySelector('#nav a[href="#contact"]');if(a)a.remove();var v=$("#v-contact");if(v)v.remove();return}
+(function(){var c=CONTACT;if(!c.email&&!c.phone&&!c.address){var a=document.querySelector('#nav a[href="#contact"]');if(a)a.style.display="none";var cd=$("#cdet");if(cd)cd.innerHTML='<p class="mu">—</p>';return}
 $("#cdet").innerHTML=(c.address?'<p>📍 '+esc(c.address)+'</p>':'')+(c.phone?'<p>📞 <a href="tel:'+esc(c.phone)+'">'+esc(c.phone)+'</a></p>':'')+(c.email?'<p>✉ <a href="mailto:'+esc(c.email)+'">'+esc(c.email)+'</a></p>':'')})();
 $("#lang").onclick=function(){L=L=="bn"?"en":"bn";tr()};
+addEventListener("beforeinstallprompt",function(e){e.preventDefault();window.__ip=e;var b=$("#pwab");if(b)b.style.display=""});
+if("serviceWorker" in navigator&&location.protocol=="https:")addEventListener("load",function(){try{navigator.serviceWorker.register("sw.js").catch(function(){})}catch(e){}});
 $("#go").onclick=function(){var e=$("#le").value.trim(),p=$("#lp").value;$("#lerr").textContent="";
 if(SA.mode!="firebase"){$("#lerr").textContent=D[L].eCfg;return}
 SA.login(e,p).then(function(u){location.hash=u.staff?"admin":"portal"}).catch(function(x){$("#lerr").textContent=D[L][x.message=="inactive"?"eInact":"eAuth"]})};
@@ -410,6 +455,7 @@ const cfg={apiKey:"AIzaSyDHl6SNaZ7pLoLG-_MZtn3oZasCJMDm0vM",authDomain:"sixfold-
 if(!cfg.apiKey.startsWith("YOUR")){
 const app=initializeApp(cfg),auth=getAuth(app),db=getFirestore(app);
 SA.mode="firebase";SA.ready=false;
+["about","activities","constitution","contact"].forEach(id=>getDoc(doc(db,"pages/"+id)).then(x=>{if(x.exists()){PG[id]=x.data();if(window.applyPages)applyPages()}}).catch(()=>{}));
 // ===== Lite mode: Cloud Functions ছাড়া। নিয়ম জোর করে Firestore rules (firebase/firestore.rules) =====
 const D=p=>doc(db,p),ts=()=>serverTimestamp(),need=(c,m)=>{if(!c)throw new Error(m)};
 const gd=async p=>{try{return await getDoc(D(p))}catch(e){return{exists:()=>false,data:()=>null}}};
@@ -418,7 +464,7 @@ const COL={monthly:"contributions",joining:"joiningFees"},FEE={monthly:100,joini
 const KINDS=["general","support","member","amendment","dissolution"],UN=["amendment","member","dissolution"],NEED={general:5,support:4},FOUNDERS=6;
 const sp=a=>{const p=Math.floor(a*80/100);return{p:p,c:a-p}};
 const rows0=(c,w)=>getDocs(w?query(collection(db,c),where(w[0],w[1],w[2])):collection(db,c)).then(s=>s.docs.map(d=>({id:d.id,...d.data()})));
-function resolve(k,y,n,e){if(UN.includes(k))return n>0?"rejected":y>=e?"approved":"open";const nd=Math.min(NEED[k],e);return y>=nd?"approved":n>e-nd?"rejected":"open"}
+function resolve(k,y,n,e){if(UN.includes(k))return n>0?"rejected":y>=e?"approved":"open";const nd=Math.min(NEED[k],e);return (y>=nd&&(k!=="support"||y+n>=Math.min(5,e)))?"approved":n>e-nd?"rejected":"open"}
 // ভোটের ফল সবসময় ভোট থেকে হিসাব হয় (৬ প্রতিষ্ঠাতা ধরে; সহায়তায় সংশ্লিষ্ট সদস্য বাদে ৫)
 async function enrich(rs){return Promise.all(rs.map(async p=>{const vs=await getDocs(collection(db,"proposals/"+p.id+"/votes")),votes={};vs.forEach(v=>{votes[v.id]=v.data().vote});const a=Object.values(votes),y=a.filter(v=>v==="yes").length,n=a.length-y,el=FOUNDERS-(p.kind==="support"?1:0);return{...p,votes,yesCount:y,noCount:n,eligible:el,status:resolve(p.kind,y,n,el)}}))}
 SA.rows=async(c,w)=>{
@@ -476,6 +522,19 @@ H.createProposal=async d=>{const m=me().memberId;need(KINDS.includes(d.kind),"Ba
  await setDoc(ref,x);return{id:ref.id}};
 H.castVote=async d=>{need(["yes","no"].includes(d.vote),"Bad vote");
  try{await setDoc(D("proposals/"+d.proposalId+"/votes/"+me().memberId),{vote:d.vote,createdAt:ts()})}catch(e){throw new Error("Already voted, or you cannot vote on this")}return{ok:true}};
+H.withdrawBalance=async d=>{adm();const id=String(d.id||""),amt=d.amount,reason=String(d.reason||"").trim().slice(0,300);need(/^SA-\d{3}$/.test(id),"Bad member id");need(id!==me().memberId,"You cannot record your own pay-out");
+ need(Number.isInteger(amt)&&amt>0,"Bad amount");need(reason.length>=3,"Reason required");
+ const pa=await gd("personalAccounts/"+id),bal=pa.exists()?pa.data().currentBalance||0:0;need(amt<=bal,"Amount is more than the personal balance ("+bal+")");
+ const b=writeBatch(db),tid="WDR-"+id+"-"+Date.now();
+ tx(b,tid,{memberId:id,type:"withdrawal",amount:-amt,personalShare:-amt,commonShare:0,description:"Withdrawal: "+reason});
+ b.set(D("personalAccounts/"+id),{memberId:id,currentBalance:increment(-amt),updatedAt:ts()},{merge:true});
+ aud(b,"BALANCE_WITHDRAWN",id,String(bal),String(bal-amt),reason);
+ try{await b.commit()}catch(e){throw new Error(e.code==="permission-denied"?"Not allowed (Firestore rules — deploy the new rules)":e.message)}return{ok:true}};
+H.savePage=async d=>{adm();need(["about","activities","constitution","contact"].includes(d.id),"Bad page");
+ const bn=String(d.bn||"").slice(0,20000),en=String(d.en||"").slice(0,20000),pdf=String(d.pdf||"").trim();need(pdf===""||/^https:\/\/\S{3,480}$/.test(pdf),"PDF link must start with https://");
+ const b=writeBatch(db);b.set(D("pages/"+d.id),{bn,en,pdf,updatedAt:ts()});aud(b,"PAGE_EDITED",d.id,"",String(bn.length+en.length));
+ try{await b.commit()}catch(e){throw new Error(e.code==="permission-denied"?"Not allowed (Firestore rules — deploy the new rules)":e.message)}
+ PG[d.id]={bn,en,pdf};applyPages();return{ok:true}};
 H.reverseExpense=async d=>{adm();const reason=String(d.reason||"").trim().slice(0,300);need(d.id&&reason.length>=3,"Expense and reason (min 3 chars) required");
  const es=await gd("expenses/"+d.id);need(es.exists(),"Expense not found");const e=es.data();need(!e.reversed,"Already reversed");
  const tid="TRX-EXP-"+d.id,rid="REV-"+tid,tr=await gd("transactions/"+tid);need(tr.exists()&&tr.data().type==="expense","Original expense entry missing");need(!(await gd("transactions/"+rid)).exists(),"Already reversed");
