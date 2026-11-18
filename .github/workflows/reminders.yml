@@ -1,0 +1,33 @@
+name: Monthly dues reminder
+
+on:
+  schedule:
+    # প্রতি মাসের ১, ৫, ৮, ৯ তারিখ, সকাল ১০:০০ (বাংলাদেশ) = ০৪:০০ UTC
+    - cron: "0 4 1,5,8,9 * *"
+  workflow_dispatch:
+    inputs:
+      dry:
+        description: "Dry run (ইমেইল পাঠাবে না, শুধু গুনবে)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Send reminders
+        run: node scripts/send-reminders.mjs
+        env:
+          DRY: ${{ github.event_name == 'workflow_dispatch' && inputs.dry || 'false' }}
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
+          EMAILJS_PRIVATE_KEY: ${{ secrets.EMAILJS_PRIVATE_KEY }}
+          EMAILJS_SERVICE: service_5era5xp
+          EMAILJS_TEMPLATE: template_v8kfpea
+          EMAILJS_PUBLIC_KEY: tYewrTJYoLBkzESJV
