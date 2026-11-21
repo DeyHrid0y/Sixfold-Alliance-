@@ -184,8 +184,8 @@ function tbl(h,r){return '<div class="card wrap">'+(r.length>5?'<input class="ts
 
 var H={date:["তারিখ","Date"],type:["ধরন","Type"],amt:["পরিমাণ","Amount"],st:["অবস্থা","Status"],mon:["মাস","Month"],mem:["সদস্য","Member"],ok:["যাচাইকৃত","Verified"]};
 var JF=["ভর্তি ফি","Joining fee"],MC=["মাসিক চাঁদা","Monthly contribution"];
-var V={portal:{cur:"dash",tabs:[["dash",["ড্যাশবোর্ড","Dashboard"]],["pro",["প্রোফাইল","Profile"]],["con",["চাঁদা","Contributions"]],["tx",["লেনদেন","Transactions"]],["org",["সংগঠন","Organization"]],["rp",["রিপোর্ট","Reports"]],["vote",["ভোট","Votes"]],["loan",["সহায়তা","Support"]],["meet",["সভা","Meetings"]],["nt",["নোটিফিকেশন","Notices"]]]},
-admin:{cur:"ov",tabs:[["ov",["ওভারভিউ","Overview"]],["pay",["পেমেন্ট","Payments"]],["led",["লেজার","Ledger"]],["rp",["রিপোর্ট","Reports"]],["mem",["সদস্য","Members"]],["exp",["খরচ","Expenses"]],["ln",["সহায়তা","Support"]],["mt",["সভা","Meetings"]],["ap",["আবেদন","Applications"]],["pg",["পাতা","Pages"]],["au",["অডিট লগ","Audit log"]]]}};
+var V={portal:{cur:"dash",tabs:[["dash",["ড্যাশবোর্ড","Dashboard"]],["pro",["প্রোফাইল","Profile"]],["con",["চাঁদা","Contributions"]],["tx",["লেনদেন","Transactions"]],["trf",["ট্রান্সফার","Transfer"]],["org",["সংগঠন","Organization"]],["rp",["রিপোর্ট","Reports"]],["vote",["ভোট","Votes"]],["loan",["সহায়তা","Support"]],["meet",["সভা","Meetings"]],["nt",["নোটিফিকেশন","Notices"]]]},
+admin:{cur:"ov",tabs:[["ov",["ওভারভিউ","Overview"]],["pay",["পেমেন্ট","Payments"]],["led",["লেজার","Ledger"]],["rp",["রিপোর্ট","Reports"]],["mem",["সদস্য","Members"]],["tr",["ট্রান্সফার","Transfers"]],["exp",["খরচ","Expenses"]],["ln",["সহায়তা","Support"]],["mt",["সভা","Meetings"]],["ap",["আবেদন","Applications"]],["pg",["পাতা","Pages"]],["au",["অডিট লগ","Audit log"]]]}};
 function nb(n){return String(n).replace(/[0-9]/g,function(d){return "০১২৩৪৫৬৭৮৯"[d]})}
 function tk(n){return (n<0?"-":"")+"৳"+nb(Math.abs(n||0))}
 function dt(x){return x&&x.toDate?x.toDate().toISOString().slice(0,10):"—"}
@@ -217,8 +217,9 @@ adminled:async function(){var rows=srt(await SA.rows("transactions")),rev={},ad=
 
 
 var B={portalpro:function(){var u=SA.user||{},f=SA.mode=="firebase"?"":" disabled";return '<h2>'+t(["আমার প্রোফাইল","My profile"])+'</h2><div class="card narrow" style="margin:0"><label>'+t(["নাম","Name"])+'</label><input disabled value="'+esc(u.name||"")+'"><label>ID</label><input disabled value="'+esc(u.memberId||"")+'"><label>'+t(["ফোন","Phone"])+'</label><input id="pph" maxlength="20"'+f+'><button class="btn sv"'+f+'>'+t(["সংরক্ষণ","Save"])+'</button> <span class="pill" id="pmsg"></span></div>'+(SA.mode=="firebase"?'<div class="card narrow" style="margin:14px 0 0"><b>'+t(["পাসওয়ার্ড বদলান","Change password"])+'</b><label>'+t(["বর্তমান পাসওয়ার্ড","Current password"])+'</label><input id="cp0" type="password" autocomplete="current-password"><label>'+t(["নতুন পাসওয়ার্ড (কমপক্ষে ৮ অক্ষর)","New password (min 8 characters)"])+'</label><input id="cp1" type="password" autocomplete="new-password"><label>'+t(["নতুন পাসওয়ার্ড আবার","Repeat new password"])+'</label><input id="cp2" type="password" autocomplete="new-password"><button class="btn cpw">'+t(["পাসওয়ার্ড বদলান","Change password"])+'</button> <span class="pill" id="cpmsg"></span></div>':"")+'<div class="card narrow" style="margin:14px 0 0"><b>📲 '+t(["হোম স্ক্রিনে যোগ করুন","Add to home screen"])+'</b><p class="mu">'+t(["অ্যাপের মতো সরাসরি খুলতে: ব্রাউজারের মেনু (⋮ বা শেয়ার ⎙) থেকে “Add to Home screen” বেছে নিন।","To open it like an app: use the browser menu (⋮ or Share ⎙) → “Add to Home screen”."])+'</p><button class="btn pwa" id="pwab" style="'+(window.__ip?'':'display:none')+'">'+t(["ইনস্টল করুন","Install"])+'</button></div>'}};
-var TL2={expense:["খরচ","Expense"],loanDisbursement:["ঋণ বিতরণ","Loan disbursed"],donation:["অনুদান","Donation"],loanRepayment:["ঋণ ফেরত","Loan repayment"],expenseReversal:["খরচ বাতিল (Reversal)","Expense reversal"],withdrawal:["ব্যালেন্স ফেরত","Balance withdrawal"]};
+var TL2={expense:["খরচ","Expense"],loanDisbursement:["ঋণ বিতরণ","Loan disbursed"],donation:["অনুদান","Donation"],loanRepayment:["ঋণ ফেরত","Loan repayment"],expenseReversal:["খরচ বাতিল (Reversal)","Expense reversal"],withdrawal:["ব্যালেন্স ফেরত","Balance withdrawal"],transferOut:["ব্যালেন্স ট্রান্সফার (পাঠানো)","Transfer sent"],transferIn:["ব্যালেন্স ট্রান্সফার (প্রাপ্ত)","Transfer received"],transferRefund:["ট্রান্সফার ফেরত","Transfer refunded"]};
 for(var k2 in TL2)TL[k2]=TL2[k2];
+var TS={pending:["অপেক্ষমাণ","Pending"],approved:["অনুমোদিত","Approved"],rejected:["বাতিল (টাকা ফেরত)","Rejected (refunded)"]};
 var PS={open:["ভোট চলছে","Voting"],approved:["অনুমোদিত","Approved"],rejected:["বাতিল","Rejected"],disbursed:["বিতরণ হয়েছে","Disbursed"],repaid:["পরিশোধিত","Repaid"]};
 var KD={general:["সাধারণ","General"],support:["সহায়তা","Support"],member:["নতুন সদস্য","New member"],amendment:["গঠনতন্ত্র সংশোধন","Amendment"],dissolution:["বিলুপ্তি","Dissolution"]};
 function inp(l,h){return '<label>'+t(l)+'</label>'+h}
@@ -301,28 +302,62 @@ adminrp:async function(){var r=await Promise.all([SA.rows("transactions"),SA.doc
 
 
 document.addEventListener("input",function(e){var el=e.target;if(!el.classList||!el.classList.contains("tsrch"))return;var q=el.value.toLowerCase().trim(),w=el.closest(".card"),rs=w.querySelectorAll("tr");for(var i=1;i<rs.length;i++)rs[i].style.display=(!q||rs[i].textContent.toLowerCase().indexOf(q)>=0)?"":"none"});
-document.addEventListener("change",function(e){if(e.target.id=="pgsel"){PGSEL=e.target.value;rv("admin");return}if(e.target.id=="dmo"){DUEM=e.target.value||null;rv("admin");return}if(e.target.id=="ryr"){RY=e.target.value;var vw=e.target.closest(".view");rv(vw.id.slice(2))}});
+document.addEventListener("change",function(e){if(e.target.id=="pgsel"){PGSEL=e.target.value;rv("admin");return}if(e.target.id=="rmauto"){SA.call("setReminderEnabled",{enabled:e.target.checked}).catch(function(x){alert(x.message)});return}if(e.target.id=="dmo"){DUEM=e.target.value||null;rv("admin");return}if(e.target.id=="ryr"){RY=e.target.value;var vw=e.target.closest(".view");rv(vw.id.slice(2))}});
 
 var AS={pending:["অপেক্ষমাণ","Pending"],voting:["ভোট চলছে","Voting"],approved:["অনুমোদিত","Approved"],rejected:["বাতিল","Rejected"],member:["সদস্য হয়েছে","Member created"]};
 A.adminap=async function(){var r=sup(await SA.rows("applications"));
  return '<h2>'+t(["সদস্য আবেদন","Membership applications"])+'</h2>'+tbl([["নাম","Name"],["পিতা","Father"],["মাতা","Mother"],["গ্রাম","Village"],["ফোন","Phone"],"Email","bKash",["অবস্থা","Status"],""],r.map(function(x){return [esc(x.firstName+" "+x.lastName),esc(x.fatherName),esc(x.motherName),esc(x.village),esc(x.phone),esc(x.email),esc(x.bkash||"—"),AS[x.status]||x.status,x.status=="pending"?'<button class="btn s apv" data-id="'+esc(x.id)+'">'+t(["ভোটে তুলুন","To vote"])+'</button> <button class="btn o s apr" style="color:var(--ac)" data-id="'+esc(x.id)+'">✗</button>':(x.status=="approved"?'<button class="btn s apm" data-id="'+esc(x.id)+'">'+t(["সদস্য বানান","Create member"])+'</button>':"")]}))};
 
 
-var DUEM=null,DUE=[],PGSEL="about";
+var DUEM=null,DUE=[],PGSEL="about",TRF={step:1,to:"",amt:"",note:""};
+function mname(m){return m?(L=="bn"?(m.nameBn||m.nameEn):(m.nameEn||m.nameBn)):"—"}
+A.portaltrf=async function(){var me0=SA.user,r=await Promise.all([SA.rows("members"),SA.doc("personalAccounts/"+me0.memberId),SA.rows("transfers",["fromMemberId","==",me0.memberId]),SA.rows("transfers",["toMemberId","==",me0.memberId])]),
+ mem=r[0],bal=(r[1]&&r[1].currentBalance)||0,nm={};mem.forEach(function(m){nm[m.memberId]=m});
+ var others=mem.filter(function(m){return m.status=="active"&&m.memberId!=me0.memberId}).sort(function(a,b){return a.memberId<b.memberId?-1:1});
+ var hist=srt(r[2].concat(r[3])),rows=hist.map(function(x){var out=x.fromMemberId==me0.memberId;return [dt(x.createdAt),out?t(["পাঠানো → ","Sent → "])+esc(x.toMemberId)+' '+esc(mname(nm[x.toMemberId])):t(["প্রাপ্ত ← ","Received ← "])+esc(x.fromMemberId)+' '+esc(mname(nm[x.fromMemberId])),(out?"-":"+")+tk(x.amount).replace("-",""),TS[x.status]||x.status,esc(x.note||"")]});
+ var h='<h2>'+t(["ব্যালেন্স ট্রান্সফার","Balance transfer"])+'</h2>',acc='<div class="card narrow" style="margin:0 0 12px;display:flex;justify-content:space-between;align-items:center;gap:10px"><span>'+t(["আপনার ব্যক্তিগত ব্যালেন্স","Your personal balance"])+'</span><b style="font-size:1.25rem;color:var(--ac)">'+tk(bal)+'</b></div><p class="mu" style="margin:-6px 0 12px">'+t(["ব্যালেন্সের সর্বোচ্চ ৫০% ট্রান্সফার করা যায়, বাকি ৫০% থাকতেই হবে। এখন সর্বোচ্চ: ","Up to 50% of the balance can be transferred; the other 50% must stay. Max now: "])+'<b>'+tk(Math.floor(bal/2))+'</b></p>';
+ if(TRF.step==2){var to=nm[TRF.to];
+  return h+acc+frm('<b>'+t(["নিশ্চিত করুন","Please confirm"])+'</b>'+[[["প্রেরক","From"],esc(me0.memberId)+' · '+esc(mname(nm[me0.memberId]||{nameBn:me0.name,nameEn:me0.name}))],[["প্রাপক","To"],esc(TRF.to)+' · '+esc(mname(to))],[["পরিমাণ","Amount"],tk(parseInt(TRF.amt,10))],[["মন্তব্য","Note"],esc(TRF.note||"—")]].map(function(p){return '<div style="display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--bd)"><span class="mu">'+t(p[0])+'</span><b style="text-align:right">'+p[1]+'</b></div>'}).join("")+'<p class="note" style="margin-top:12px">'+t(["এখনই আপনার ব্যালেন্স থেকে টাকা কাটা যাবে। Admin অনুমোদন করলে প্রাপকের অ্যাকাউন্টে যোগ হবে; বাতিল করলে আপনি টাকা ফেরত পাবেন।","The amount is deducted from your balance right away. After admin approval it is added to the receiver; if rejected you get it back."])+'</p><button class="btn tok">'+t(["নিশ্চিত করুন","Confirm"])+'</button> <button class="btn o tbk" style="color:var(--ac)">'+t(["পেছনে","Back"])+'</button> <span class="pill" id="tmsg"></span>')}
+ return h+acc+frm('<label>১. '+t(["প্রেরক অ্যাকাউন্ট","Sender account"])+' *</label><select disabled><option>'+t(["ব্যক্তিগত","Personal"])+' - '+esc(me0.memberId)+' · '+tk(bal)+'</option></select>'+
+  '<label>২. '+t(["প্রাপক অ্যাকাউন্ট","Receiver account"])+' *</label><select id="trf_to"><option value="">'+t(["সদস্য বেছে নিন","Choose a member"])+'</option>'+others.map(function(m){return '<option value="'+esc(m.memberId)+'"'+(m.memberId==TRF.to?' selected':'')+'>'+esc(m.memberId)+' · '+esc(mname(m))+'</option>'}).join("")+'</select>'+
+  '<div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 0">'+[500,1000,2000,3000,5000].map(function(a){return '<button type="button" class="btn o s tch" style="color:var(--ac);border-radius:20px'+(a*2>bal?';opacity:.4':'')+'" data-a="'+a+'">'+nb(a)+'</button>'}).join("")+'</div>'+
+  '<label>৩. '+t(["ট্রান্সফার পরিমাণ (৳)","Transfer amount (৳)"])+' *</label><input id="trf_amt" type="number" inputmode="numeric" min="1" step="1" value="'+esc(TRF.amt)+'">'+
+  '<label>৪. '+t(["মন্তব্য","Note"])+'</label><input id="trf_note" maxlength="200" placeholder="'+t(["মন্তব্য লিখুন","Write a note"])+'" value="'+esc(TRF.note)+'">'+
+  '<button class="btn tnx" data-b="'+bal+'">'+t(["পরবর্তী","Next"])+'</button> <span class="pill" id="tmsg"></span>')+
+  '<h3 style="margin-top:22px">'+t(["আমার ট্রান্সফার","My transfers"])+'</h3>'+(rows.length?tbl([["তারিখ","Date"],["বিবরণ","Details"],["পরিমাণ","Amount"],["অবস্থা","Status"],["মন্তব্য","Note"]],rows):'<p class="mu">'+t(["এখনো কোনো ট্রান্সফার নেই","No transfers yet"])+'</p>')};
+A.admintr=async function(){var r=await Promise.all([SA.rows("transfers"),SA.rows("members")]),nm={};r[1].forEach(function(m){nm[m.memberId]=m});var all=srt(r[0]),ad=SA.user.role=="admin";
+ var H3=[["তারিখ","Date"],["প্রেরক","From"],["প্রাপক","To"],["পরিমাণ","Amount"],["মন্তব্য","Note"],["অবস্থা","Status"]];
+ return '<h2>'+t(["ব্যালেন্স ট্রান্সফার অনুমোদন","Balance transfer approvals"])+'</h2>'+(all.length?xb("transfers",H3,all.map(function(x){return [dt(x.createdAt),x.fromMemberId,x.toMemberId,x.amount,x.note||"",(TS[x.status]||[x.status,x.status])[1]]}))+tbl(H3.concat([""]),all.map(function(x){return [dt(x.createdAt),esc(x.fromMemberId)+' '+esc(mname(nm[x.fromMemberId])),esc(x.toMemberId)+' '+esc(mname(nm[x.toMemberId])),tk(x.amount),esc(x.note||""),TS[x.status]||x.status,x.status=="pending"&&ad?'<button class="btn s tap" data-id="'+esc(x.id)+'">✓ '+t(["অনুমোদন","Approve"])+'</button> <button class="btn o s trj" style="color:var(--ac)" data-id="'+esc(x.id)+'">✗ '+t(["বাতিল","Reject"])+'</button>':""]})):'<p class="mu">'+t(["কোনো ট্রান্সফার নেই","No transfers"])+'</p>')};
 A.adminpay=async function(){return (await A.adminpayList())+await dueCard()};
+function dhakaToday(){return window.__TODAY||new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Dhaka"}).format(new Date())}
+var RDAYS=[1,5,8,9];
+async function dueFor(mo){var r=await Promise.all([SA.rows("members"),SA.rows("contributions"),SA.rows("users")]),paid={},em={};
+ r[1].forEach(function(x){if(x.month==mo&&(x.status=="verified"||x.status=="pending"))paid[x.memberId]=1});r[2].forEach(function(u){em[u.memberId]=u.email});
+ return r[0].filter(function(m){return m.status=="active"&&!paid[m.memberId]}).sort(function(a,b){return a.memberId<b.memberId?-1:1}).map(function(m){return {id:m.memberId,name:m.nameBn||m.nameEn,email:em[m.memberId]||""}})}
+async function autoRemind(){try{
+ if(!EJ.reminder||SA.user.role!="admin")return;
+ var td=dhakaToday(),mo=td.slice(0,7),day=parseInt(td.slice(8,10),10),sd=0;RDAYS.forEach(function(d){if(d<=day)sd=d});if(!sd)return;
+ var sched=mo+"-"+String(sd).padStart(2,"0"),lg=await SA.doc("settings/reminders")||{};
+ if(lg.enabled===false)return;if(lg.date&&lg.date>=sched)return;
+ await SA.call("saveReminderLog",{date:td,month:mo,sent:0,failed:0}); /* আগে তালা: একই দিনে দ্বিতীয়বার যাবে না */
+ var due=(await dueFor(mo)).filter(function(x){return x.email}),ok=0,bad=0;
+ for(var i=0;i<due.length;i++){try{await remindEmail(due[i],mo);ok++}catch(e){bad++}await new Promise(function(r){setTimeout(r,500)})}
+ await SA.call("saveReminderLog",{date:td,month:mo,sent:ok,failed:bad});
+ if(due.length){var bn=document.createElement("div");bn.className="note";bn.style.cssText="position:fixed;left:12px;right:12px;bottom:12px;z-index:50;max-width:520px;margin:auto";bn.textContent=t(["📧 স্বয়ংক্রিয় চাঁদা স্মরণ: "+nb(ok)+" জনকে ইমেইল পাঠানো হয়েছে"+(bad?" ("+nb(bad)+" ব্যর্থ)":""),"📧 Auto dues reminder: "+ok+" email(s) sent"+(bad?" ("+bad+" failed)":"")]);document.body.appendChild(bn);setTimeout(function(){bn.remove()},9000)}
+}catch(e){console.error("autoRemind",e)}}
 async function dueCard(){var mo=DUEM||today().slice(0,7),r=await Promise.all([SA.rows("members"),SA.rows("contributions"),SA.rows("users")]),paid={},em={};
  r[1].forEach(function(x){if(x.month==mo&&(x.status=="verified"||x.status=="pending"))paid[x.memberId]=1});r[2].forEach(function(u){em[u.memberId]=u.email});
  var due=r[0].filter(function(m){return m.status=="active"&&!paid[m.memberId]}).sort(function(a,b){return a.memberId<b.memberId?-1:1});
- DUE=due.map(function(m){return {id:m.memberId,name:m.nameBn||m.nameEn,email:em[m.memberId]||""}});DUEM=mo;
+ DUE=due.map(function(m){return {id:m.memberId,name:m.nameBn||m.nameEn,email:em[m.memberId]||""}});DUEM=mo;var lg=await SA.doc("settings/reminders")||{};
  var H2=["ID",["নাম","Name"],"Email"],rows=DUE.map(function(x){return [x.id,esc(x.name),esc(x.email||"—")]});
- return '<h2>'+t(["বকেয়া চাঁদা","Unpaid dues"])+'</h2><div class="card narrow" style="margin:0 0 10px"><label>'+t(["মাস","Month"])+'</label><input type="month" id="dmo" value="'+mo+'"></div>'+(rows.length?xb("dues",H2,DUE.map(function(x){return [x.id,x.name,x.email]}))+tbl(H2,rows)+'<p><button class="btn s dnt">🔔 '+t(["অ্যাপে নোটিস পাঠান","Post notice"])+'</button> <button class="btn o s dem" style="color:var(--ac)">📧 '+t(["ইমেইল স্মরণ পাঠান","Send email reminders"])+' ('+nb(DUE.filter(function(x){return x.email}).length)+')</button> <span class="pill" id="dmsg"></span></p>':'<p class="mu">✓ '+t(["এই মাসে কারও বকেয়া নেই","No one is behind for this month"])+'</p>')}
+ return '<h2>'+t(["বকেয়া চাঁদা","Unpaid dues"])+'</h2><div class="card narrow" style="margin:0 0 10px"><label>'+t(["মাস","Month"])+'</label><input type="month" id="dmo" value="'+mo+'">'+(SA.user.role=="admin"?'<label style="display:flex;gap:8px;align-items:center;margin-top:12px"><input type="checkbox" id="rmauto" style="width:auto"'+(lg.enabled===false?'':' checked')+'> '+t(["স্বয়ংক্রিয় স্মরণ (প্রতি মাসের ১, ৫, ৮, ৯ তারিখ — ঐ সময় বা তার পরে admin সাইটে ঢুকলে)","Automatic reminders (1st, 5th, 8th, 9th of each month — sent when an admin opens the site on/after that date)"])+'</label>'+(lg.date?'<p class="mu" style="margin:6px 0 0">'+t(["সর্বশেষ: ","Last run: "])+esc(lg.date)+' · '+t(["পাঠানো ","sent "])+nb(lg.sent||0)+'</p>':''):'')+'</div>'+(rows.length?xb("dues",H2,DUE.map(function(x){return [x.id,x.name,x.email]}))+tbl(H2,rows)+'<p><button class="btn s dnt">🔔 '+t(["অ্যাপে নোটিস পাঠান","Post notice"])+'</button> <button class="btn o s dem" style="color:var(--ac)">📧 '+t(["ইমেইল স্মরণ পাঠান","Send email reminders"])+' ('+nb(DUE.filter(function(x){return x.email}).length)+')</button> <span class="pill" id="dmsg"></span></p>':'<p class="mu">✓ '+t(["এই মাসে কারও বকেয়া নেই","No one is behind for this month"])+'</p>')}
 function remindEmail(m,mo){return fetch("https://api.emailjs.com/api/v1.0/email/send",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({service_id:EJ.service,template_id:EJ.reminder,user_id:EJ.key,template_params:{to_email:m.email,to_name:m.name,member_id:m.id,month:mo,amount:"100"}})}).then(function(res){if(!res.ok)throw new Error(res.status)})}
 var PGN={about:["আমাদের কথা","About"],activities:["কার্যক্রম","Activities"],constitution:["গঠনতন্ত্র","Constitution"],contact:["যোগাযোগ","Contact"]};
 A.adminpg=async function(){if(SA.user.role!="admin")return '<p class="mu">Admin only</p>';var d=await SA.doc("pages/"+PGSEL)||{};
  return '<h2>'+t(["পাতার লেখা সম্পাদনা","Edit page content"])+'</h2>'+frm(inp(["পাতা","Page"],'<select id="pgsel">'+Object.keys(PGN).map(function(k){return '<option value="'+k+'"'+(k==PGSEL?' selected':'')+'>'+t(PGN[k])+'</option>'}).join("")+'</select>')+inp(["বাংলা লেখা","Bangla text"],'<textarea id="pg_bn" rows="10" style="width:100%">'+esc(d.bn||"")+'</textarea>')+inp(["English text","English text"],'<textarea id="pg_en" rows="10" style="width:100%">'+esc(d.en||"")+'</textarea>')+(PGSEL=="constitution"?inp(["PDF লিংক (ঐচ্ছিক, https://…)","PDF link (optional, https://…)"],'<input id="pg_pdf" maxlength="500" value="'+esc(d.pdf||"")+'">'):'<input id="pg_pdf" type="hidden" value="">')+'<p class="mu">'+t(["# শিরোনাম · ## উপশিরোনাম · - তালিকা · **মোটা** · ![বর্ণনা](https://ছবির-লিংক) · https:// লিংক ও ইমেইল নিজে থেকে লিংক হবে। দুটো ঘরই ফাঁকা রেখে সংরক্ষণ করলে আগের ডিফল্ট লেখা ফিরে আসবে।","# Heading · ## Subheading · - list · **bold** · ![alt](https://image-link) · https:// links and emails become links automatically. Save with both boxes empty to restore the default text."])+'</p><button class="btn pgsv">'+t(["সংরক্ষণ","Save"])+'</button>')};
 var _pd=A.portaldash,_ao=A.adminov;
 A.portaldash=async function(){var h=await _pd(),l=await SA.rows("loans",["memberId","==",SA.user.memberId]).catch(function(){return []});return dueBanner(l,false)+h};
-A.adminov=async function(){var h=await _ao(),l=await SA.rows("loans").catch(function(){return []});return dueBanner(l,true)+h};
+A.adminov=async function(){var h=await _ao(),l=await SA.rows("loans").catch(function(){return []}),tr=await SA.rows("transfers",["status","==","pending"]).catch(function(){return []});return (tr.length?'<div class="note" style="margin-bottom:12px"><b>⏳ '+t([nb(tr.length)+" টি ব্যালেন্স ট্রান্সফার অনুমোদনের অপেক্ষায় (ট্রান্সফার ট্যাব)",tr.length+" balance transfer(s) waiting for approval (Transfers tab)"])+'</b></div>':"")+dueBanner(l,true)+h};
 var NEWM=null,EDM=null;
 A.adminmem=async function(){var r=(await SA.rows("members")).sort(function(a,b){return a.memberId<b.memberId?-1:1}),nact=r.filter(function(x){return x.status=="active"}).length,box="",adm=SA.user.role=="admin";
  var pab={};(await SA.rows("personalAccounts")).forEach(function(q){pab[q.id]=q.currentBalance||0});
@@ -386,6 +421,16 @@ else if(c.contains("dem")){var dm2=$("#dmsg"),L2=DUE.filter(function(x){return x
  if(!EJ.reminder){alert(t(["ইমেইল স্মরণের জন্য EmailJS-এ একটি নতুন template বানিয়ে তার ID কোডের EJ.reminder-এ বসাতে হবে। আপাতত “অ্যাপে নোটিস” ব্যবহার করুন।","To send email reminders, create a new EmailJS template and put its ID into EJ.reminder in the code. Use “Post notice” for now."]));return}
  if(!L2.length||!confirm(t(["ইমেইল পাঠাবেন? ","Send emails? "])+L2.length))return;b.disabled=true;var okc=0,bad=0;
  L2.reduce(function(pr,m){return pr.then(function(){return remindEmail(m,DUEM).then(function(){okc++},function(){bad++})})},Promise.resolve()).then(function(){b.disabled=false;dm2.textContent="✓ "+okc+(bad?" · ✗ "+bad:"")})}
+else if(c.contains("tch")){$("#trf_amt").value=b.dataset.a}
+else if(c.contains("tnx")){var tm=$("#tmsg"),tt=$("#trf_to").value,ta=parseInt($("#trf_amt").value,10),bl=parseInt(b.dataset.b,10)||0;tm.textContent="";
+ if(!tt){tm.textContent=t(["প্রাপক বেছে নিন","Choose a receiver"]);return}
+ if(!ta||ta<1){tm.textContent=t(["সঠিক পরিমাণ দিন","Enter a valid amount"]);return}
+ if(ta*2>bl){tm.textContent=t(["সর্বোচ্চ ৫০% ট্রান্সফার করা যায়: ","You can transfer at most 50%: "])+tk(Math.floor(bl/2));return}
+ TRF={step:2,to:tt,amt:String(ta),note:$("#trf_note").value.trim()};rv(id)}
+else if(c.contains("tbk")){TRF.step=1;rv(id)}
+else if(c.contains("tok")){b.disabled=true;done(call("requestTransfer",{to:TRF.to,amount:parseInt(TRF.amt,10),note:TRF.note}).then(function(){TRF={step:1,to:"",amt:"",note:""}},function(x){b.disabled=false;throw x}))}
+else if(c.contains("tap")){if(confirm(t(["এই ট্রান্সফার অনুমোদন করবেন? প্রাপকের অ্যাকাউন্টে টাকা যোগ হবে।","Approve this transfer? The receiver will be credited."])))done(call("reviewTransfer",{id:b.dataset.id,approve:true}))}
+else if(c.contains("trj")){var rr=prompt(t(["বাতিলের কারণ (প্রেরক টাকা ফেরত পাবে)","Reason for rejecting (the sender is refunded)"]));if(rr)done(call("reviewTransfer",{id:b.dataset.id,approve:false,reason:rr}))}
 else if(c.contains("emb")){EDM=b.dataset.id;rv(id)}
 else if(c.contains("emcn")){EDM=null;rv(id)}
 else if(c.contains("emsv"))done(call("editMember",{id:b.dataset.id,nameEn:v("em_en"),nameBn:v("em_bn"),phone:v("em_ph"),bkash:v("em_bk"),village:v("em_vi")}).then(function(){EDM=null}));
@@ -522,6 +567,26 @@ H.createProposal=async d=>{const m=me().memberId;need(KINDS.includes(d.kind),"Ba
  await setDoc(ref,x);return{id:ref.id}};
 H.castVote=async d=>{need(["yes","no"].includes(d.vote),"Bad vote");
  try{await setDoc(D("proposals/"+d.proposalId+"/votes/"+me().memberId),{vote:d.vote,createdAt:ts()})}catch(e){throw new Error("Already voted, or you cannot vote on this")}return{ok:true}};
+H.requestTransfer=async d=>{const from=me().memberId,to=String(d.to||""),amt=d.amount,note=String(d.note||"").trim().slice(0,200);
+ need(/^SA-\d{3}$/.test(from),"Not a member account");need(/^SA-\d{3}$/.test(to)&&to!==from,"Choose another member");need(Number.isInteger(amt)&&amt>=1&&amt<=1000000,"Bad amount");
+ const ms=await gd("members/"+to);need(ms.exists()&&ms.data().status==="active","Receiver not found or inactive");
+ const pa=await gd("personalAccounts/"+from),bal=pa.exists()?pa.data().currentBalance||0:0;need(amt*2<=bal,"At most 50% of the balance can be transferred (max "+Math.floor(bal/2)+")");
+ const id="TRF-"+Date.now().toString(36)+Math.random().toString(36).slice(2,6).toUpperCase(),b=writeBatch(db);
+ b.set(D("transfers/"+id),{id,fromMemberId:from,toMemberId:to,amount:amt,note,status:"pending",createdBy:uid(),createdAt:ts()});
+ tx(b,"TRX-OUT-"+id,{memberId:from,type:"transferOut",amount:-amt,personalShare:-amt,commonShare:0,paymentId:id,paymentType:"transfer",description:("Transfer to "+to+(note?": "+note:"")).slice(0,400)});
+ b.update(D("personalAccounts/"+from),{currentBalance:increment(-amt),lastXfer:id,updatedAt:ts()});
+ try{await b.commit()}catch(e){throw new Error(e.code==="permission-denied"?"Not allowed (Firestore rules — deploy the new rules)":e.message)}return{ok:true,id}};
+H.reviewTransfer=async d=>{adm();const ts0=await gd("transfers/"+d.id);need(ts0.exists(),"Transfer not found");const x=ts0.data();need(x.status==="pending","Already reviewed");
+ const b=writeBatch(db),ok=!!d.approve,reason=String(d.reason||"").trim().slice(0,300);
+ b.update(D("transfers/"+d.id),{status:ok?"approved":"rejected",reviewedBy:uid(),reviewedAt:ts()});
+ if(ok){tx(b,"TRF-IN-"+d.id,{memberId:x.toMemberId,type:"transferIn",amount:x.amount,personalShare:x.amount,commonShare:0,paymentId:d.id,paymentType:"transfer",description:"Transfer from "+x.fromMemberId});
+  b.set(D("personalAccounts/"+x.toMemberId),{memberId:x.toMemberId,totalDeposit:increment(0),currentBalance:increment(x.amount),updatedAt:ts()},{merge:true})}
+ else{need(reason.length>=3,"Reason required");tx(b,"TRF-REF-"+d.id,{memberId:x.fromMemberId,type:"transferRefund",amount:x.amount,personalShare:x.amount,commonShare:0,paymentId:d.id,paymentType:"transfer",description:"Transfer rejected, refunded: "+reason});
+  b.set(D("personalAccounts/"+x.fromMemberId),{memberId:x.fromMemberId,totalDeposit:increment(0),currentBalance:increment(x.amount),updatedAt:ts()},{merge:true})}
+ aud(b,ok?"TRANSFER_APPROVED":"TRANSFER_REJECTED",d.id,x.fromMemberId+"→"+x.toMemberId,String(x.amount),reason);
+ try{await b.commit()}catch(e){throw new Error(e.code==="permission-denied"?"Not allowed (Firestore rules — deploy the new rules)":e.message)}return{ok:true}};
+H.saveReminderLog=async d=>{adm();const b=writeBatch(db);b.set(D("settings/reminders"),{date:String(d.date),month:String(d.month),sent:d.sent|0,failed:d.failed|0},{merge:true});await b.commit();return{ok:true}};
+H.setReminderEnabled=async d=>{adm();const b=writeBatch(db);b.set(D("settings/reminders"),{enabled:!!d.enabled},{merge:true});await b.commit();return{ok:true}};
 H.withdrawBalance=async d=>{adm();const id=String(d.id||""),amt=d.amount,reason=String(d.reason||"").trim().slice(0,300);need(/^SA-\d{3}$/.test(id),"Bad member id");need(id!==me().memberId,"You cannot record your own pay-out");
  need(Number.isInteger(amt)&&amt>0,"Bad amount");need(reason.length>=3,"Reason required");
  const pa=await gd("personalAccounts/"+id),bal=pa.exists()?pa.data().currentBalance||0:0;need(amt<=bal,"Amount is more than the personal balance ("+bal+")");
@@ -628,7 +693,7 @@ A.adminln=async function(){const r=await Promise.all([SA.rows("loans"),SA.rows("
  return dueBanner(r[0],true)+'<h2>'+t(["সহায়তা (ঋণ / অনুদান)","Support (loans / donations)"])+'</h2>'+xb("support-list",H0,all.map(function(x){return [x.memberId,x.type,x.amount,(PS[x.status]||[x.status,x.status])[1],x.type=="loan"?x.outstanding:"",x.dueDate||""]}))+tbl(H0.concat([""]),pend.concat(done))};
 onAuthStateChanged(auth,async u=>{
  try{if(u)await load(u);else SA.user=null}catch(e){SA.user=null}
- SA.ready=true;rv("portal");rv("admin");route()});
+ SA.ready=true;rv("portal");rv("admin");route();if(SA.user&&SA.user.role=="admin")setTimeout(function(){if(window.autoRemind)autoRemind()},1500)});
 }
 </script>
 </body>
